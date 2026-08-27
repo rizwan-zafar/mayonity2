@@ -128,7 +128,11 @@ sql_path = "prisma/deploy.sql"
 if not os.path.isfile(sql_path):
     sys.exit("prisma/deploy.sql missing from the release")
 
-mysql = next((cmd for cmd in ("mysql", "mariadb") if shutil.which(cmd)), None)
+mysql = None
+for cmd in ("mysql", "mariadb"):
+    if shutil.which(cmd):
+        mysql = cmd
+        break
 if not mysql:
     sys.exit("mysql/mariadb client not found on the server")
 
@@ -138,10 +142,10 @@ if password:
 
 base = [
     mysql,
-    f"--host={host}",
-    f"--port={port}",
-    f"--user={user}",
-    f"--database={database}",
+    "--host=" + host,
+    "--port=" + port,
+    "--user=" + user,
+    "--database=" + database,
     "--batch",
     "--skip-column-names",
 ]
@@ -153,8 +157,9 @@ check = subprocess.run(
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name IN ('User','user')",
     ],
     env=env,
-    capture_output=True,
-    text=True,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.PIPE,
+    universal_newlines=True,
 )
 if check.returncode != 0:
     sys.stderr.write(check.stderr or check.stdout or "mysql check failed\n")
