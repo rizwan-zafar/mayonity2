@@ -60,6 +60,7 @@ jobs:
           DATABASE_URL: ${{ secrets.ENV_DATABASE_URL }}
           AUTH_SECRET: ${{ secrets.ENV_AUTH_SECRET }}
           NEXT_PUBLIC_SITE_URL: ${{ secrets.ENV_NEXT_PUBLIC_SITE_URL }}
+          SKIP_DB_BUILD: "1"
         run: |
           npm ci
           npx prisma generate
