@@ -122,6 +122,7 @@ jobs:
             printf "AUTH_SECRET=%s\n" "$(env_quote "$ENV_AUTH_SECRET")"
             printf "NEXT_PUBLIC_SITE_URL=%s\n" "$(env_quote "$ENV_NEXT_PUBLIC_SITE_URL")"
             printf "NODE_ENV=production\n"
+            printf "PRISMA_CLIENT_ENGINE_TYPE=binary\n"
           } > "$RUNNER_TEMP/cpanel.env"
 
           SSH_OPTS="-i $HOME/.ssh/cpanel_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20"
