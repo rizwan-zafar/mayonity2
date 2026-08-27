@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/admin";
 
 const links = [
-  { href: "/admin", label: "Dashboard" },
+  { href: "/admin", label: "Dashboards" },
   { href: "/admin/services", label: "Services" },
   { href: "/admin/portfolio", label: "Portfolio" },
   { href: "/admin/team", label: "Team" },

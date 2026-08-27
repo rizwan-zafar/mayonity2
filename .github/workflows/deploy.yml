@@ -20,11 +20,14 @@ jobs:
       CPANEL_NODEVENV: ${{ secrets.CPANEL_NODEVENV }}
       CPANEL_SSH_KEY: ${{ secrets.CPANEL_SSH_KEY }}
       CPANEL_SSH_PASSPHRASE: ${{ secrets.CPANEL_SSH_PASSPHRASE }}
+      ENV_DATABASE_URL: ${{ secrets.ENV_DATABASE_URL }}
+      ENV_AUTH_SECRET: ${{ secrets.ENV_AUTH_SECRET }}
+      ENV_NEXT_PUBLIC_SITE_URL: ${{ secrets.ENV_NEXT_PUBLIC_SITE_URL }}
     steps:
       - name: Check required secrets
         run: |
           missing=0
-          for key in CPANEL_HOST CPANEL_USERNAME CPANEL_SSH_KEY CPANEL_APP_PATH CPANEL_NODEVENV; do
+          for key in CPANEL_HOST CPANEL_USERNAME CPANEL_SSH_KEY CPANEL_APP_PATH CPANEL_NODEVENV ENV_DATABASE_URL ENV_AUTH_SECRET ENV_NEXT_PUBLIC_SITE_URL; do
             if [ -z "${!key}" ]; then
               echo "Missing GitHub secret: $key"
               missing=1
@@ -34,6 +37,14 @@ jobs:
             echo "Add secrets in GitHub → Settings → Secrets and variables → Actions"
             exit 1
           fi
+          case "$CPANEL_APP_PATH" in
+            /home/*) ;;
+            *)
+              echo "CPANEL_APP_PATH must be the full cPanel folder, e.g. /home/mayonity/mayonity2"
+              echo "A path like /subdomains/... is at the server root and mkdir will fail with Permission denied."
+              exit 1
+              ;;
+          esac
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -69,7 +80,6 @@ jobs:
           fi
 
           # OpenSSH encrypted keys do not contain the word ENCRYPTED in the PEM text.
-          # Probe with an empty passphrase instead of grepping the file.
           if ! ssh-keygen -y -P "" -f ~/.ssh/cpanel_deploy >/dev/null 2>&1; then
             if [ -z "${CPANEL_SSH_PASSPHRASE:-}" ]; then
               echo "This private key is locked with a passphrase (cPanel required Password / Re-type Password)."
@@ -88,6 +98,19 @@ jobs:
             exit 1
           fi
 
+          # Write .env on the runner, then upload it. Do not embed secrets inside an SSH heredoc
+          # (that broke YAML because ENVEOF had to sit at column 0).
+          env_quote() {
+            printf "'%s'" "${1//\'/\'\\\'\'}"
+          }
+          umask 077
+          {
+            printf "DATABASE_URL=%s\n" "$(env_quote "$ENV_DATABASE_URL")"
+            printf "AUTH_SECRET=%s\n" "$(env_quote "$ENV_AUTH_SECRET")"
+            printf "NEXT_PUBLIC_SITE_URL=%s\n" "$(env_quote "$ENV_NEXT_PUBLIC_SITE_URL")"
+            printf "NODE_ENV=production\n"
+          } > "$RUNNER_TEMP/cpanel.env"
+
           SSH_OPTS="-i $HOME/.ssh/cpanel_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20"
 
           echo "Testing SSH to ${CPANEL_USERNAME}@${CPANEL_HOST}:${CPANEL_PORT}..."
@@ -100,6 +123,14 @@ jobs:
             exit 1
           fi
 
-          scp -P "${CPANEL_PORT}" $SSH_OPTS mayonity-release.tar.gz "${CPANEL_USERNAME}@${CPANEL_HOST}:/tmp/mayonity-release.tar.gz"
+          echo "Uploading release package..."
+          scp -P "${CPANEL_PORT}" $SSH_OPTS \
+            mayonity-release.tar.gz \
+            "$RUNNER_TEMP/cpanel.env" \
+            "${CPANEL_USERNAME}@${CPANEL_HOST}:/tmp/"
+
+          echo "Extracting and building on server..."
           ssh -p "${CPANEL_PORT}" $SSH_OPTS "${CPANEL_USERNAME}@${CPANEL_HOST}" \
-            "set -e; mkdir -p '${CPANEL_APP_PATH}'; tar -xzf /tmp/mayonity-release.tar.gz -C '${CPANEL_APP_PATH}'; chmod +x '${CPANEL_APP_PATH}/scripts/cpanel-build.sh'; '${CPANEL_APP_PATH}/scripts/cpanel-build.sh' '${CPANEL_APP_PATH}' '${CPANEL_NODEVENV}'; rm -f /tmp/mayonity-release.tar.gz"
+            "set -euo pipefail; mkdir -p '${CPANEL_APP_PATH}'; tar -xzf /tmp/mayonity-release.tar.gz -C '${CPANEL_APP_PATH}'; mv /tmp/cpanel.env '${CPANEL_APP_PATH}/.env'; chmod 600 '${CPANEL_APP_PATH}/.env'; chmod +x '${CPANEL_APP_PATH}/scripts/cpanel-build.sh'; '${CPANEL_APP_PATH}/scripts/cpanel-build.sh' '${CPANEL_APP_PATH}' '${CPANEL_NODEVENV}'; rm -f /tmp/mayonity-release.tar.gz"
+
+          echo "Deployment completed successfully."

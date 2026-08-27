@@ -21,7 +21,6 @@ fi
 
 if [ -z "${DATABASE_URL:-}" ] || [ -z "${AUTH_SECRET:-}" ] || [ -z "${NEXT_PUBLIC_SITE_URL:-}" ]; then
   echo "ERROR: $APP_PATH/.env must contain DATABASE_URL, AUTH_SECRET and NEXT_PUBLIC_SITE_URL"
-  echo "Create that file once on the server. GitHub deploy will not overwrite it."
   exit 1
 fi
 
