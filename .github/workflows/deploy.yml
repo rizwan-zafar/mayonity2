@@ -46,8 +46,8 @@ jobs:
             --exclude='./.next' \
             --exclude='./node_modules' \
             --exclude='./public/uploads' \
-            --exclude='./mayonity-release.tar.gz' \
-            -czf mayonity-release.tar.gz .
+            -czf "$RUNNER_TEMP/mayonity-release.tar.gz" .
+          cp "$RUNNER_TEMP/mayonity-release.tar.gz" "$GITHUB_WORKSPACE/mayonity-release.tar.gz"
 
       - name: Upload release
         uses: appleboy/scp-action@v0.1.7
