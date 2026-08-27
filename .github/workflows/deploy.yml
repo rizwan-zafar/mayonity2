@@ -68,7 +68,9 @@ jobs:
             exit 1
           fi
 
-          if grep -qE "aes256-ctr|bcrypt|ENCRYPTED" ~/.ssh/cpanel_deploy; then
+          # OpenSSH encrypted keys do not contain the word ENCRYPTED in the PEM text.
+          # Probe with an empty passphrase instead of grepping the file.
+          if ! ssh-keygen -y -P "" -f ~/.ssh/cpanel_deploy >/dev/null 2>&1; then
             if [ -z "${CPANEL_SSH_PASSPHRASE:-}" ]; then
               echo "This private key is locked with a passphrase (cPanel required Password / Re-type Password)."
               echo "Add GitHub secret CPANEL_SSH_PASSPHRASE with that same password, then re-run the workflow."
@@ -81,7 +83,7 @@ jobs:
             fi
           fi
 
-          if ! ssh-keygen -y -f ~/.ssh/cpanel_deploy >/dev/null; then
+          if ! ssh-keygen -y -P "" -f ~/.ssh/cpanel_deploy >/dev/null; then
             echo "The private key is still unreadable after unlock. Re-copy CPANEL_SSH_KEY from cPanel (View/Download Key)."
             exit 1
           fi
