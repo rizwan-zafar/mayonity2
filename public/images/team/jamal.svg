@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" fill="none">
+  <rect width="800" height="1000" fill="#0b0d14"/>
+  <circle cx="400" cy="420" r="260" fill="url(#g)"/>
+  <circle cx="400" cy="360" r="90" fill="#f3f4f8" opacity="0.92"/>
+  <path d="M220 720c30-120 110-180 180-180s150 60 180 180" fill="#f3f4f8" opacity="0.92"/>
+  <text x="400" y="940" text-anchor="middle" fill="white" font-family="Arial" font-size="28" opacity="0.5">JO</text>
+  <defs>
+    <linearGradient id="g" x1="140" y1="160" x2="660" y2="700">
+      <stop stop-color="#8b7dff"/><stop offset="1" stop-color="#6ea8ff"/>
+    </linearGradient>
+  </defs>
+</svg>

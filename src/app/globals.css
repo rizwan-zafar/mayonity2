@@ -1,26 +1,214 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --bg: #05060a;
+  --bg-elevated: #0b0d14;
+  --surface: rgba(255, 255, 255, 0.035);
+  --surface-strong: rgba(255, 255, 255, 0.06);
+  --line: rgba(255, 255, 255, 0.08);
+  --text: #f3f4f8;
+  --muted: #9aa3b8;
+  --accent: #6ea8ff;
+  --violet: #8b7dff;
+  --cyan: #3ee0c8;
+  --glow: 0 0 80px rgba(110, 168, 255, 0.18);
+  --radius: 1.5rem;
+  --header-h: 4.5rem;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-violet: var(--violet);
+  --color-cyan: var(--cyan);
+  --color-line: var(--line);
   --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-syne);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  border-color: var(--line);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(139, 125, 255, 0.12), transparent 55%),
+    radial-gradient(900px 500px at -10% 20%, rgba(62, 224, 200, 0.08), transparent 50%),
+    var(--bg);
+  color: var(--text);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+  letter-spacing: -0.011em;
+}
+
+::selection {
+  background: rgba(110, 168, 255, 0.28);
+  color: white;
+}
+
+a {
+  text-underline-offset: 0.2em;
+}
+
+.display {
+  font-family: var(--font-syne), var(--font-geist-sans), sans-serif;
+  letter-spacing: -0.045em;
+  line-height: 0.92;
+}
+
+.hero-title {
+  font-size: clamp(3.1rem, 9vw, 7.4rem);
+}
+
+.section-title {
+  font-size: clamp(2.2rem, 5.4vw, 5.4rem);
+}
+
+.sub-title {
+  font-size: clamp(1.15rem, 2vw, 1.85rem);
+}
+
+.body-copy {
+  font-size: clamp(1rem, 1.15vw, 1.2rem);
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+.glass {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.025));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(22px);
+}
+
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse at center, black 35%, transparent 78%);
+}
+
+.aurora {
+  background:
+    radial-gradient(closest-side, rgba(110, 168, 255, 0.35), transparent),
+    radial-gradient(closest-side, rgba(139, 125, 255, 0.28), transparent),
+    radial-gradient(closest-side, rgba(62, 224, 200, 0.22), transparent);
+}
+
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+}
+
+.prose-mayonity {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+}
+
+.prose-mayonity h2,
+.prose-mayonity h3,
+.prose-mayonity h4 {
+  color: var(--text);
+  font-family: var(--font-syne), sans-serif;
+  letter-spacing: -0.03em;
+  margin: 2rem 0 0.8rem;
+}
+
+.prose-mayonity h2 {
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+}
+
+.prose-mayonity p,
+.prose-mayonity ul,
+.prose-mayonity ol {
+  margin: 1rem 0;
+}
+
+.prose-mayonity a {
+  color: var(--accent);
+}
+
+.prose-mayonity img {
+  border-radius: 1rem;
+}
+
+.marquee {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: marquee 42s linear infinite;
+}
+
+.marquee:hover {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pulse-line {
+  0% {
+    transform: scaleX(0.2);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scaleX(0.2);
+    opacity: 0.2;
+  }
+}
+
+.scan-line {
+  transform-origin: left;
+  animation: pulse-line 3.6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .marquee,
+  .scan-line {
+    animation: none;
+  }
+}
+
+input,
+textarea,
+select,
+button {
+  font: inherit;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid rgba(110, 168, 255, 0.8);
+  outline-offset: 3px;
 }
