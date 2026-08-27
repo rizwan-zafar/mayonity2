@@ -33,8 +33,14 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
-# deploy artifacts
-mayonity-release.tar.gz
+# private keys — never commit
+sshkey
+sshkey.pub
+*.ppk
+id_rsa
+id_rsa.pub
+github_deploy
+github_deploy.pub
 
 # user-uploaded images (kept on the server)
 /public/uploads/*

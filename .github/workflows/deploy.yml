@@ -15,15 +15,15 @@ jobs:
     env:
       CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
       CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
-      CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
       CPANEL_PORT: ${{ secrets.CPANEL_PORT || 22 }}
       CPANEL_APP_PATH: ${{ secrets.CPANEL_APP_PATH }}
       CPANEL_NODEVENV: ${{ secrets.CPANEL_NODEVENV }}
+      CPANEL_SSH_KEY: ${{ secrets.CPANEL_SSH_KEY }}
     steps:
       - name: Check required secrets
         run: |
           missing=0
-          for key in CPANEL_HOST CPANEL_USERNAME CPANEL_PASSWORD CPANEL_APP_PATH CPANEL_NODEVENV; do
+          for key in CPANEL_HOST CPANEL_USERNAME CPANEL_SSH_KEY CPANEL_APP_PATH CPANEL_NODEVENV; do
             if [ -z "${!key}" ]; then
               echo "Missing GitHub secret: $key"
               missing=1
@@ -49,29 +49,13 @@ jobs:
             -czf "$RUNNER_TEMP/mayonity-release.tar.gz" .
           cp "$RUNNER_TEMP/mayonity-release.tar.gz" "$GITHUB_WORKSPACE/mayonity-release.tar.gz"
 
-      - name: Upload release
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ env.CPANEL_HOST }}
-          username: ${{ env.CPANEL_USERNAME }}
-          password: ${{ env.CPANEL_PASSWORD }}
-          port: ${{ env.CPANEL_PORT }}
-          source: mayonity-release.tar.gz
-          target: /tmp
-          overwrite: true
-
-      - name: Build and restart on cPanel
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ env.CPANEL_HOST }}
-          username: ${{ env.CPANEL_USERNAME }}
-          password: ${{ env.CPANEL_PASSWORD }}
-          port: ${{ env.CPANEL_PORT }}
-          script: |
-            set -e
-            APP_PATH="${{ env.CPANEL_APP_PATH }}"
-            mkdir -p "$APP_PATH"
-            tar -xzf /tmp/mayonity-release.tar.gz -C "$APP_PATH"
-            chmod +x "$APP_PATH/scripts/cpanel-build.sh"
-            "$APP_PATH/scripts/cpanel-build.sh" "$APP_PATH" "${{ env.CPANEL_NODEVENV }}"
-            rm -f /tmp/mayonity-release.tar.gz
+      - name: Upload and build on cPanel
+        run: |
+          set -euo pipefail
+          mkdir -p ~/.ssh
+          printf '%s\n' "$CPANEL_SSH_KEY" > ~/.ssh/cpanel_deploy
+          chmod 600 ~/.ssh/cpanel_deploy
+          SSH_OPTS="-i $HOME/.ssh/cpanel_deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new"
+          scp -P "${CPANEL_PORT}" $SSH_OPTS mayonity-release.tar.gz "${CPANEL_USERNAME}@${CPANEL_HOST}:/tmp/mayonity-release.tar.gz"
+          ssh -p "${CPANEL_PORT}" $SSH_OPTS "${CPANEL_USERNAME}@${CPANEL_HOST}" \
+            "set -e; mkdir -p '${CPANEL_APP_PATH}'; tar -xzf /tmp/mayonity-release.tar.gz -C '${CPANEL_APP_PATH}'; chmod +x '${CPANEL_APP_PATH}/scripts/cpanel-build.sh'; '${CPANEL_APP_PATH}/scripts/cpanel-build.sh' '${CPANEL_APP_PATH}' '${CPANEL_NODEVENV}'; rm -f /tmp/mayonity-release.tar.gz"
