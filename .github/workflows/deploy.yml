@@ -1,0 +1,77 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: cpanel-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      CPANEL_HOST: ${{ secrets.CPANEL_HOST }}
+      CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
+      CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
+      CPANEL_PORT: ${{ secrets.CPANEL_PORT || 22 }}
+      CPANEL_APP_PATH: ${{ secrets.CPANEL_APP_PATH }}
+      CPANEL_NODEVENV: ${{ secrets.CPANEL_NODEVENV }}
+    steps:
+      - name: Check required secrets
+        run: |
+          missing=0
+          for key in CPANEL_HOST CPANEL_USERNAME CPANEL_PASSWORD CPANEL_APP_PATH CPANEL_NODEVENV; do
+            if [ -z "${!key}" ]; then
+              echo "Missing GitHub secret: $key"
+              missing=1
+            fi
+          done
+          if [ "$missing" -ne 0 ]; then
+            echo "Add secrets in GitHub → Settings → Secrets and variables → Actions"
+            exit 1
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pack release
+        run: |
+          tar \
+            --exclude='./.git' \
+            --exclude='./.github' \
+            --exclude='./.env' \
+            --exclude='./.next' \
+            --exclude='./node_modules' \
+            --exclude='./public/uploads' \
+            --exclude='./mayonity-release.tar.gz' \
+            -czf mayonity-release.tar.gz .
+
+      - name: Upload release
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ env.CPANEL_HOST }}
+          username: ${{ env.CPANEL_USERNAME }}
+          password: ${{ env.CPANEL_PASSWORD }}
+          port: ${{ env.CPANEL_PORT }}
+          source: mayonity-release.tar.gz
+          target: /tmp
+          overwrite: true
+
+      - name: Build and restart on cPanel
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ env.CPANEL_HOST }}
+          username: ${{ env.CPANEL_USERNAME }}
+          password: ${{ env.CPANEL_PASSWORD }}
+          port: ${{ env.CPANEL_PORT }}
+          script: |
+            set -e
+            APP_PATH="${{ env.CPANEL_APP_PATH }}"
+            mkdir -p "$APP_PATH"
+            tar -xzf /tmp/mayonity-release.tar.gz -C "$APP_PATH"
+            chmod +x "$APP_PATH/scripts/cpanel-build.sh"
+            "$APP_PATH/scripts/cpanel-build.sh" "$APP_PATH" "${{ env.CPANEL_NODEVENV }}"
+            rm -f /tmp/mayonity-release.tar.gz

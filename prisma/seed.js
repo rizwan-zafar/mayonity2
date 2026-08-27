@@ -8,6 +8,12 @@ function json(value) {
 }
 
 async function main() {
+  const existing = await prisma.user.count();
+  if (existing > 0) {
+    console.log("Database already has data. Skipping seed.");
+    return;
+  }
+
   const password = await bcrypt.hash("MayonityAdmin2050!", 12);
 
   const admin = await prisma.user.upsert({
