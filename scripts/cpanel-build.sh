@@ -98,10 +98,11 @@ if [ -z "${DATABASE_URL:-}" ] || [ -z "${AUTH_SECRET:-}" ] || [ -z "${NEXT_PUBLI
   exit 1
 fi
 
-export NODE_OPTIONS="${NODE_OPTIONS:---max-old-space-size=2048}"
+# Shared cPanel/CloudLinux LVE is often 1GB. A 2GB V8 heap aborts with exit 134.
+export NODE_OPTIONS="--max-old-space-size=512"
 
 echo "Installing dependencies..."
-NPM_CONFIG_PRODUCTION=false npm ci --include=dev
+NPM_CONFIG_PRODUCTION=false npm ci --include=dev --no-audit --no-fund --ignore-scripts --maxsockets=1
 
 echo "Syncing database schema..."
 npx prisma generate
