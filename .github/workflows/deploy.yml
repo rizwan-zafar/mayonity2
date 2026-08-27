@@ -64,6 +64,7 @@ jobs:
         run: |
           npm ci
           npx prisma generate
+          npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/deploy.sql
           NODE_ENV=production npx next build
 
       - name: Pack release
