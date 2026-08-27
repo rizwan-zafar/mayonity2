@@ -5,11 +5,6 @@ import { getPortfolioBySlug, getPublishedPortfolio, getRelatedPortfolio } from "
 import { parseJson, siteUrl } from "@/lib/utils";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
-export async function generateStaticParams() {
-  const projects = await getPublishedPortfolio();
-  return projects.map((project) => ({ slug: project.slug }));
-}
-
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const project = await getPortfolioBySlug(slug);

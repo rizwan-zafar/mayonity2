@@ -40,7 +40,7 @@ jobs:
           case "$CPANEL_APP_PATH" in
             /home/*) ;;
             *)
-              echo "CPANEL_APP_PATH must be the full cPanel folder, e.g. /home/mayonity/mayonity2"
+              echo "CPANEL_APP_PATH must be the full cPanel folder, e.g. /home/mayonity/subdomains/mayonity"
               echo "A path like /subdomains/... is at the server root and mkdir will fail with Permission denied."
               exit 1
               ;;
@@ -49,27 +49,41 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install and build on GitHub
+        env:
+          DATABASE_URL: ${{ secrets.ENV_DATABASE_URL }}
+          AUTH_SECRET: ${{ secrets.ENV_AUTH_SECRET }}
+          NEXT_PUBLIC_SITE_URL: ${{ secrets.ENV_NEXT_PUBLIC_SITE_URL }}
+        run: |
+          npm ci
+          npx prisma generate
+          NODE_ENV=production npx next build
+
       - name: Pack release
         run: |
           tar \
             --exclude='./.git' \
             --exclude='./.github' \
             --exclude='./.env' \
-            --exclude='./.next' \
-            --exclude='./node_modules' \
             --exclude='./public/uploads' \
             --exclude='./sshkey' \
             --exclude='./sshkey.pub' \
             -czf "$RUNNER_TEMP/mayonity-release.tar.gz" .
           cp "$RUNNER_TEMP/mayonity-release.tar.gz" "$GITHUB_WORKSPACE/mayonity-release.tar.gz"
+          ls -lh "$GITHUB_WORKSPACE/mayonity-release.tar.gz"
 
-      - name: Upload and build on cPanel
+      - name: Upload and finish on cPanel
         run: |
           set -euo pipefail
           mkdir -p ~/.ssh
           chmod 700 ~/.ssh
 
-          # GitHub secrets often drop the trailing newline and keep Windows CR
           printf '%s\n' "${CPANEL_SSH_KEY//$'\r'/}" > ~/.ssh/cpanel_deploy
           chmod 600 ~/.ssh/cpanel_deploy
 
@@ -79,7 +93,6 @@ jobs:
             exit 1
           fi
 
-          # OpenSSH encrypted keys do not contain the word ENCRYPTED in the PEM text.
           if ! ssh-keygen -y -P "" -f ~/.ssh/cpanel_deploy >/dev/null 2>&1; then
             if [ -z "${CPANEL_SSH_PASSPHRASE:-}" ]; then
               echo "This private key is locked with a passphrase (cPanel required Password / Re-type Password)."
@@ -98,8 +111,6 @@ jobs:
             exit 1
           fi
 
-          # Write .env on the runner, then upload it. Do not embed secrets inside an SSH heredoc
-          # (that broke YAML because ENVEOF had to sit at column 0).
           env_quote() {
             printf "'%s'" "${1//\'/\'\\\'\'}"
           }
@@ -111,7 +122,7 @@ jobs:
             printf "NODE_ENV=production\n"
           } > "$RUNNER_TEMP/cpanel.env"
 
-          SSH_OPTS="-i $HOME/.ssh/cpanel_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20"
+          SSH_OPTS="-i $HOME/.ssh/cpanel_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20"
 
           echo "Testing SSH to ${CPANEL_USERNAME}@${CPANEL_HOST}:${CPANEL_PORT}..."
           if ! ssh -p "${CPANEL_PORT}" $SSH_OPTS "${CPANEL_USERNAME}@${CPANEL_HOST}" "echo SSH_OK"; then
@@ -123,14 +134,16 @@ jobs:
             exit 1
           fi
 
-          echo "Uploading release package..."
-          scp -P "${CPANEL_PORT}" $SSH_OPTS \
-            mayonity-release.tar.gz \
-            "$RUNNER_TEMP/cpanel.env" \
-            "${CPANEL_USERNAME}@${CPANEL_HOST}:/tmp/"
+          echo "Uploading .env..."
+          scp -P "${CPANEL_PORT}" $SSH_OPTS "$RUNNER_TEMP/cpanel.env" "${CPANEL_USERNAME}@${CPANEL_HOST}:/tmp/cpanel.env"
 
-          echo "Extracting and building on server..."
+          echo "Uploading prebuilt release (this can take a few minutes)..."
           ssh -p "${CPANEL_PORT}" $SSH_OPTS "${CPANEL_USERNAME}@${CPANEL_HOST}" \
-            "set -euo pipefail; mkdir -p '${CPANEL_APP_PATH}'; tar -xzf /tmp/mayonity-release.tar.gz -C '${CPANEL_APP_PATH}'; mv /tmp/cpanel.env '${CPANEL_APP_PATH}/.env'; chmod 600 '${CPANEL_APP_PATH}/.env'; chmod +x '${CPANEL_APP_PATH}/scripts/cpanel-build.sh'; '${CPANEL_APP_PATH}/scripts/cpanel-build.sh' '${CPANEL_APP_PATH}' '${CPANEL_NODEVENV}'; rm -f /tmp/mayonity-release.tar.gz"
+            "set -euo pipefail; mkdir -p '${CPANEL_APP_PATH}'; tar -xzf - -C '${CPANEL_APP_PATH}'" \
+            < mayonity-release.tar.gz
+
+          echo "Syncing database and restarting app..."
+          ssh -p "${CPANEL_PORT}" $SSH_OPTS "${CPANEL_USERNAME}@${CPANEL_HOST}" \
+            "set -euo pipefail; mv /tmp/cpanel.env '${CPANEL_APP_PATH}/.env'; chmod 600 '${CPANEL_APP_PATH}/.env'; chmod +x '${CPANEL_APP_PATH}/scripts/cpanel-build.sh'; '${CPANEL_APP_PATH}/scripts/cpanel-build.sh' '${CPANEL_APP_PATH}' '${CPANEL_NODEVENV}'"
 
           echo "Deployment completed successfully."

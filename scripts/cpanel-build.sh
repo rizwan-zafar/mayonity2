@@ -6,7 +6,6 @@ NODEVENV="${2:-}"
 
 cd "$APP_PATH"
 
-# CloudLinux node/npm in nodevenv are bash wrappers. Real npm is `#!/usr/bin/env node`.
 is_cloudlinux_wrapper() {
   local first
   [ -f "$1" ] || return 1
@@ -32,9 +31,6 @@ else
   exit 1
 fi
 
-# nodevenv/.../20/bin/{node,npm} are CloudLinux shell wrappers. They call
-# set_env_vars.py (fails for subdomain apps) then /usr/bin/node which is missing.
-# Use the real alt-nodejs binaries instead.
 NODE_VERSION="$(basename "$(cd "$NODEVENV_BIN/.." && pwd)")"
 
 find_real_toolchain() {
@@ -63,26 +59,28 @@ REAL_BIN="$(find_real_toolchain "$NODE_VERSION" || true)"
 if [ -z "$REAL_BIN" ]; then
   echo "ERROR: Could not find a real Node.js toolchain (not the CloudLinux wrapper)."
   echo "nodevenv wrappers: $NODEVENV_BIN"
-  echo "Looked for /opt/alt/alt-nodejs${NODE_VERSION} and /opt/cpanel/ea-nodejs${NODE_VERSION}"
   ls -la /opt/alt 2>/dev/null || true
-  ls -la /opt/cpanel 2>/dev/null || true
   ls -la "$NODEVENV_BIN" || true
   exit 1
 fi
 
 export CL_APP_ROOT="$APP_PATH"
 export CL_VIRTUAL_ENV="$(cd "$NODEVENV_BIN/.." && pwd)"
-export PATH="$REAL_BIN:$PATH"
+export PATH="$APP_PATH/node_modules/.bin:$REAL_BIN:$PATH"
 hash -r
 
-if is_cloudlinux_wrapper "$(command -v node)" || is_cloudlinux_wrapper "$(command -v npm)"; then
-  echo "ERROR: PATH still points at CloudLinux wrappers, not $REAL_BIN"
-  echo "node=$(command -v node) npm=$(command -v npm)"
+if is_cloudlinux_wrapper "$(command -v node)"; then
+  echo "ERROR: PATH still points at a CloudLinux node wrapper"
   exit 1
 fi
 
 echo "Using $(command -v node) $(node -v)"
-echo "Using $(command -v npm) $(npm -v)"
+
+if [ ! -d node_modules ] || [ ! -d .next ]; then
+  echo "ERROR: Release is missing node_modules or .next."
+  echo "GitHub Actions must install and build before upload. This server cannot run npm ci."
+  exit 1
+fi
 
 if [ -f .env ]; then
   set -a
@@ -98,22 +96,19 @@ if [ -z "${DATABASE_URL:-}" ] || [ -z "${AUTH_SECRET:-}" ] || [ -z "${NEXT_PUBLI
   exit 1
 fi
 
-# Shared cPanel/CloudLinux LVE is often 1GB. A 2GB V8 heap aborts with exit 134.
+export NODE_ENV=production
 export NODE_OPTIONS="--max-old-space-size=512"
 
-echo "Installing dependencies..."
-NPM_CONFIG_PRODUCTION=false npm ci --include=dev --no-audit --no-fund --ignore-scripts --maxsockets=1
+mkdir -p public/uploads tmp
+
+echo "Generating Prisma client for this server..."
+npx prisma generate
 
 echo "Syncing database schema..."
-npx prisma generate
 npx prisma db push
 
 echo "Seeding database if empty..."
-npm run db:seed
-
-echo "Building Next.js..."
-export NODE_ENV=production
-npx next build
+node prisma/seed.js
 
 mkdir -p tmp
 touch tmp/restart.txt

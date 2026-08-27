@@ -5,11 +5,6 @@ import { getActiveServices, getServiceBySlug } from "@/lib/data";
 import { parseJson, siteUrl } from "@/lib/utils";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
 
-export async function generateStaticParams() {
-  const services = await getActiveServices();
-  return services.map((service) => ({ slug: service.slug }));
-}
-
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
