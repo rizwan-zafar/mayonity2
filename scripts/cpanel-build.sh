@@ -177,9 +177,6 @@ if applied.returncode != 0:
 print("Schema imported.")
 PY
 
-echo "Seeding database if empty..."
-node prisma/seed.js
-
 mkdir -p tmp
 touch tmp/restart.txt
 
