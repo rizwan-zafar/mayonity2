@@ -97,12 +97,14 @@ if [ -z "${DATABASE_URL:-}" ] || [ -z "${AUTH_SECRET:-}" ] || [ -z "${NEXT_PUBLI
 fi
 
 export NODE_ENV=production
-export NODE_OPTIONS="--max-old-space-size=512"
+export NODE_OPTIONS="--max-old-space-size=384"
 
 mkdir -p public/uploads tmp
 
-echo "Generating Prisma client for this server..."
-npx prisma generate
+if [ ! -d node_modules/.prisma/client ] && [ ! -d node_modules/@prisma/client ]; then
+  echo "ERROR: Prisma client is missing from the release. GitHub must run prisma generate before upload."
+  exit 1
+fi
 
 echo "Syncing database schema..."
 npx prisma db push
