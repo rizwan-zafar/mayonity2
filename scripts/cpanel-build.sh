@@ -7,15 +7,22 @@ NODEVENV="${2:-}"
 cd "$APP_PATH"
 
 if [ -n "$NODEVENV" ] && [ -f "$NODEVENV" ]; then
-  # cPanel Node.js Selector virtualenv, e.g. /home/USER/nodevenv/mayonity2/20/bin/activate
+  # CloudLinux activate (bin/activate) expects CL_VIRTUAL_ENV = the version dir (…/20),
+  # not the activate file. It also reads $CL_VIRTUAL_ENV before setting it, which
+  # crashes under `set -u`.
+  export CL_VIRTUAL_ENV="$(cd "$(dirname "$NODEVENV")/.." && pwd)"
+  set +u
   # shellcheck disable=SC1090
   source "$NODEVENV"
+  set -u
 fi
 
 if [ -f .env ]; then
   set -a
+  set +u
   # shellcheck disable=SC1091
   source .env
+  set -u
   set +a
 fi
 
