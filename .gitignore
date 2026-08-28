@@ -19,6 +19,9 @@
 
 # production
 /build
+/mayonity-cpanel.tar.gz
+/mayonity-release.tar.gz
+/prisma/deploy.sql
 
 # misc
 .DS_Store

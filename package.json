@@ -10,6 +10,7 @@
     "db:push": "prisma db push",
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
+    "cpanel:pack": "bash scripts/cpanel-pack.sh",
     "postinstall": "prisma generate"
   },
   "prisma": {
