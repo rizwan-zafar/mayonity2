@@ -11,7 +11,7 @@ export function Hero() {
       <div className="relative mx-auto flex min-h-[calc(100svh-var(--header-h))] max-w-7xl flex-col justify-end px-5 pb-16 md:px-8 md:pb-20">
         <p className="font-mono text-xs uppercase tracking-[0.32em] text-cyan">Future-ready digital products</p>
         <h1 className="display hero-title mt-6 max-w-5xl text-white">
-          We Build
+          I Build
           <br />
           What Comes Next.
         </h1>
