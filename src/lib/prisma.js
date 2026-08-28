@@ -12,9 +12,11 @@ function mariadbConfigFromUrl(raw) {
     user: decodeURIComponent(parsed.username || ""),
     password: decodeURIComponent(parsed.password || ""),
     database,
-    connectionLimit: 5,
+    // cPanel often allows only a few connections per MySQL user.
+    connectionLimit: process.env.NODE_ENV === "production" ? 1 : 5,
     connectTimeout: 15000,
     acquireTimeout: 15000,
+    idleTimeout: 10,
     allowPublicKeyRetrieval: true,
   };
 }

@@ -106,76 +106,7 @@ if [ ! -d node_modules/.prisma/client ] && [ ! -d node_modules/@prisma/client ];
   exit 1
 fi
 
-echo "Syncing database schema..."
-python3 - << 'PY'
-import os
-import shutil
-import subprocess
-import sys
-from urllib.parse import unquote, urlparse
-
-raw = os.environ.get("DATABASE_URL", "").strip().strip("'\"")
-if not raw:
-    sys.exit("DATABASE_URL missing")
-
-parsed = urlparse(raw)
-host = parsed.hostname or "127.0.0.1"
-port = str(parsed.port or 3306)
-user = unquote(parsed.username or "")
-password = unquote(parsed.password or "")
-database = unquote((parsed.path or "/").lstrip("/").split("?")[0])
-sql_path = "prisma/deploy.sql"
-if not os.path.isfile(sql_path):
-    sys.exit("prisma/deploy.sql missing from the release")
-
-mysql = None
-for cmd in ("mysql", "mariadb"):
-    if shutil.which(cmd):
-        mysql = cmd
-        break
-if not mysql:
-    sys.exit("mysql/mariadb client not found on the server")
-
-env = os.environ.copy()
-if password:
-    env["MYSQL_PWD"] = password
-
-base = [
-    mysql,
-    "--host=" + host,
-    "--port=" + port,
-    "--user=" + user,
-    "--database=" + database,
-    "--batch",
-    "--skip-column-names",
-]
-
-check = subprocess.run(
-    base
-    + [
-        "-e",
-        "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = DATABASE() AND table_name IN ('User','user')",
-    ],
-    env=env,
-    stdout=subprocess.PIPE,
-    stderr=subprocess.PIPE,
-    universal_newlines=True,
-)
-if check.returncode != 0:
-    sys.stderr.write(check.stderr or check.stdout or "mysql check failed\n")
-    sys.exit(check.returncode)
-
-if check.stdout.strip() not in ("", "0"):
-    print("Database already has tables. Skipping schema import.")
-    sys.exit(0)
-
-print("Creating tables with mysql (not prisma db push)...")
-with open(sql_path, "rb") as handle:
-    applied = subprocess.run(base, input=handle.read(), env=env)
-if applied.returncode != 0:
-    sys.exit("Schema import failed")
-print("Schema imported.")
-PY
+echo "Skipping database schema (managed manually with dumps)."
 
 mkdir -p tmp
 touch tmp/restart.txt
