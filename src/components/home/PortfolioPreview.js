@@ -26,11 +26,11 @@ export function PortfolioPreview({ projects }) {
                     alt={project.name}
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/25" />
                   <div className="absolute bottom-0 p-6 md:p-8">
-                    <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan">{project.category}</p>
-                    <h3 className="display mt-2 text-3xl md:text-5xl">{project.name}</h3>
-                    <p className="mt-2 max-w-xl text-sm text-white/75">{project.shortDesc}</p>
+                    <p className="font-mono text-xs uppercase tracking-[0.2em] text-cyan drop-shadow">{project.category}</p>
+                    <h3 className="display mt-2 text-3xl text-white drop-shadow-md md:text-5xl">{project.name}</h3>
+                    <p className="mt-2 max-w-xl text-sm text-white/85 drop-shadow">{project.shortDesc}</p>
                   </div>
                 </div>
               </Link>
