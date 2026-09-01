@@ -27,7 +27,7 @@ export default async function PortfolioFormPage({ params }) {
       <label className="grid gap-1 text-sm">
         Category
         <select name="category" defaultValue={item?.category || "Web"} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
-          {["Web", "Mobile", "E-Commerce", "UI/UX", "WordPress", "Other"].map((c) => (
+          {["Web", "Web App", "Mobile", "E-Commerce", "UI/UX", "WordPress", "Other"].map((c) => (
             <option key={c} value={c}>{c}</option>
           ))}
         </select>
