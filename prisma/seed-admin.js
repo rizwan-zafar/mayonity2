@@ -24,7 +24,7 @@ async function main() {
     tagline: "We Build What Comes Next.",
     description:
       "Mayonity is a software development company creating intelligent digital experiences, powerful web applications, mobile products and e-commerce ecosystems for businesses ready for the future.",
-    email: "hello@mayonity.com",
+    email: "mayonitynetwork@gmail.com",
     phone: "+1 (415) 555-2048",
     address: "Remote-first · Serving teams worldwide",
     businessHours: "Mon–Fri, 9:00–18:00",

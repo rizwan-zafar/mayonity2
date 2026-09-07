@@ -23,6 +23,13 @@ jobs:
       ENV_DATABASE_URL: ${{ secrets.ENV_DATABASE_URL }}
       ENV_AUTH_SECRET: ${{ secrets.ENV_AUTH_SECRET }}
       ENV_NEXT_PUBLIC_SITE_URL: ${{ secrets.ENV_NEXT_PUBLIC_SITE_URL }}
+      ENV_SMTP_HOST: ${{ secrets.ENV_SMTP_HOST }}
+      ENV_SMTP_PORT: ${{ secrets.ENV_SMTP_PORT }}
+      ENV_SMTP_USER: ${{ secrets.ENV_SMTP_USER }}
+      ENV_SMTP_PASS: ${{ secrets.ENV_SMTP_PASS }}
+      ENV_SMTP_FROM: ${{ secrets.ENV_SMTP_FROM }}
+      ENV_SMTP_SECURE: ${{ secrets.ENV_SMTP_SECURE }}
+      ENV_SMTP_TLS_REJECT_UNAUTHORIZED: ${{ secrets.ENV_SMTP_TLS_REJECT_UNAUTHORIZED }}
     steps:
       - name: Check required secrets
         run: |
@@ -122,6 +129,15 @@ jobs:
             printf "AUTH_SECRET=%s\n" "$(env_quote "$ENV_AUTH_SECRET")"
             printf "NEXT_PUBLIC_SITE_URL=%s\n" "$(env_quote "$ENV_NEXT_PUBLIC_SITE_URL")"
             printf "NODE_ENV=production\n"
+            if [ -n "${ENV_SMTP_HOST:-}" ]; then
+              printf "SMTP_HOST=%s\n" "$(env_quote "$ENV_SMTP_HOST")"
+              printf "SMTP_PORT=%s\n" "$(env_quote "${ENV_SMTP_PORT:-587}")"
+              printf "SMTP_USER=%s\n" "$(env_quote "$ENV_SMTP_USER")"
+              printf "SMTP_PASS=%s\n" "$(env_quote "$ENV_SMTP_PASS")"
+              printf "SMTP_FROM=%s\n" "$(env_quote "${ENV_SMTP_FROM:-$ENV_SMTP_USER}")"
+              printf "SMTP_SECURE=%s\n" "$(env_quote "${ENV_SMTP_SECURE:-false}")"
+              printf "SMTP_TLS_REJECT_UNAUTHORIZED=%s\n" "$(env_quote "${ENV_SMTP_TLS_REJECT_UNAUTHORIZED:-false}")"
+            fi
           } > "$RUNNER_TEMP/cpanel.env"
 
           SSH_OPTS="-i $HOME/.ssh/cpanel_deploy -o IdentitiesOnly=yes -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=30 -o ServerAliveCountMax=20"

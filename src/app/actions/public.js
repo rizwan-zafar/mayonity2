@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import { prisma } from "@/lib/prisma";
 import { contactSchema, newsletterSchema } from "@/lib/validation";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { sendContactNotificationEmails } from "@/lib/contact-emails";
 
 export async function submitContact(prev, formData) {
   const payload = {
@@ -48,6 +49,12 @@ export async function submitContact(prev, formData) {
       message: parsed.data.message,
     },
   });
+
+  try {
+    await sendContactNotificationEmails(parsed.data);
+  } catch (error) {
+    console.error("Contact notification emails failed:", error);
+  }
 
   return { ok: true };
 }
