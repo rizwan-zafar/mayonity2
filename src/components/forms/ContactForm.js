@@ -14,7 +14,7 @@ export function ContactForm({ services }) {
         <p className="font-mono text-xs uppercase tracking-[0.22em] text-cyan">Received</p>
         <h2 className="display mt-4 text-4xl">The idea is in. We’ll be in touch.</h2>
         <p className="mt-4 max-w-md text-muted">
-          A producer at Mayonity will read this personally. If it is urgent, write to hello@mayonity.com.
+          A producer at Mayonity will read this personally. If it is urgent, write to mayonitynetwork@gmail.com.
         </p>
       </div>
     );
