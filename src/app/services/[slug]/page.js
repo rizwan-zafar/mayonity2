@@ -1,14 +1,33 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CtaBand } from "@/components/ui/Section";
-import { getActiveServices, getServiceBySlug } from "@/lib/data";
+import { getServiceBySlug } from "@/lib/data";
 import { parseJson, siteUrl } from "@/lib/utils";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { WebDevelopmentPage } from "./WebDevelopmentPage";
+
+const WEB_DEV_META = {
+  title: "Custom Web Applications & Business Software | Mayonity",
+  description:
+    "Mayonity builds custom web applications, internal business tools, customer portals, SaaS platforms, dashboards, integrations, and workflow automation.",
+};
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
   if (!service) return { title: "Service" };
+  if (slug === "web-development") {
+    return {
+      title: { absolute: WEB_DEV_META.title },
+      description: WEB_DEV_META.description,
+      alternates: { canonical: "/services/web-development" },
+      openGraph: {
+        title: WEB_DEV_META.title,
+        description: WEB_DEV_META.description,
+        url: siteUrl("/services/web-development"),
+      },
+    };
+  }
   return {
     title: service.name,
     description: service.shortDesc,
@@ -25,6 +44,10 @@ export default async function ServiceDetailPage({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
   if (!service) notFound();
+
+  if (slug === "web-development") {
+    return <WebDevelopmentPage service={service} />;
+  }
 
   const benefits = parseJson(service.benefits, []);
   const technologies = parseJson(service.technologies, []);
