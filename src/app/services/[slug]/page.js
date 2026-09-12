@@ -4,6 +4,7 @@ import { CtaBand } from "@/components/ui/Section";
 import { getServiceBySlug } from "@/lib/data";
 import { parseJson, siteUrl } from "@/lib/utils";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { AppDevelopmentPage } from "./AppDevelopmentPage";
 import { EcommercePage } from "./EcommercePage";
 import { WebDevelopmentPage } from "./WebDevelopmentPage";
 
@@ -17,6 +18,12 @@ const ECOMMERCE_META = {
   title: "Custom E-Commerce Development | Mayonity",
   description:
     "Mayonity builds custom ecommerce stores, Shopify experiences, headless commerce platforms, mobile commerce solutions, and ecommerce integrations.",
+};
+
+const APP_DEV_META = {
+  title: "Custom Mobile App Development | Mayonity",
+  description:
+    "Mayonity builds custom mobile apps for iOS and Android, including cross-platform applications, customer apps, business apps, ecommerce apps, and API-connected products.",
 };
 
 export async function generateMetadata({ params }) {
@@ -47,6 +54,18 @@ export async function generateMetadata({ params }) {
       },
     };
   }
+  if (slug === "app-development") {
+    return {
+      title: { absolute: APP_DEV_META.title },
+      description: APP_DEV_META.description,
+      alternates: { canonical: "/services/app-development" },
+      openGraph: {
+        title: APP_DEV_META.title,
+        description: APP_DEV_META.description,
+        url: siteUrl("/services/app-development"),
+      },
+    };
+  }
   return {
     title: service.name,
     description: service.shortDesc,
@@ -70,6 +89,10 @@ export default async function ServiceDetailPage({ params }) {
 
   if (slug === "ecommerce") {
     return <EcommercePage service={service} />;
+  }
+
+  if (slug === "app-development") {
+    return <AppDevelopmentPage service={service} />;
   }
 
   const benefits = parseJson(service.benefits, []);
