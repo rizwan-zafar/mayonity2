@@ -7,6 +7,7 @@ import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { AppDevelopmentPage } from "./AppDevelopmentPage";
 import { EcommercePage } from "./EcommercePage";
 import { WebDevelopmentPage } from "./WebDevelopmentPage";
+import { WordPressPage } from "./WordPressPage";
 
 const WEB_DEV_META = {
   title: "Custom Web Applications & Business Software | Mayonity",
@@ -24,6 +25,12 @@ const APP_DEV_META = {
   title: "Custom Mobile App Development | Mayonity",
   description:
     "Mayonity builds custom mobile apps for iOS and Android, including cross-platform applications, customer apps, business apps, ecommerce apps, and API-connected products.",
+};
+
+const WORDPRESS_META = {
+  title: "Custom WordPress Development | Mayonity",
+  description:
+    "Mayonity builds custom WordPress websites, themes, headless WordPress platforms, WooCommerce solutions, and integrations around your business.",
 };
 
 export async function generateMetadata({ params }) {
@@ -66,6 +73,18 @@ export async function generateMetadata({ params }) {
       },
     };
   }
+  if (slug === "wordpress-solutions") {
+    return {
+      title: { absolute: WORDPRESS_META.title },
+      description: WORDPRESS_META.description,
+      alternates: { canonical: "/services/wordpress-solutions" },
+      openGraph: {
+        title: WORDPRESS_META.title,
+        description: WORDPRESS_META.description,
+        url: siteUrl("/services/wordpress-solutions"),
+      },
+    };
+  }
   return {
     title: service.name,
     description: service.shortDesc,
@@ -93,6 +112,10 @@ export default async function ServiceDetailPage({ params }) {
 
   if (slug === "app-development") {
     return <AppDevelopmentPage service={service} />;
+  }
+
+  if (slug === "wordpress-solutions") {
+    return <WordPressPage service={service} />;
   }
 
   const benefits = parseJson(service.benefits, []);
