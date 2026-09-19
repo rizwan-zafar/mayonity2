@@ -9,11 +9,11 @@ export function TeamPreview({ team }) {
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="People"
-          title="Our world-class experienced team members"
-          copy="Crafted with the latest design trends and engineered using modern approaches."
+          title="The team behind the work"
+          copy="A few of the people who design and build Mayonity products. Full profiles live on the team page."
         />
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {team.map((member, index) => (
+          {team.slice(0, 3).map((member, index) => (
             <Reveal key={member.name} delay={index * 0.04}>
               <article className="group overflow-hidden rounded-[1.6rem] border border-white/10">
                 <div className="relative aspect-[4/5] overflow-hidden">

@@ -7,8 +7,8 @@ export function ProcessTimeline({ steps }) {
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Method"
-          title="A product that keeps evolving."
-          copy="Seven stages, one continuous line — from the first conversation to the version that comes after launch."
+          title="From business problem to working software"
+          copy="A simple path from the first conversation to a product you can use — and keep improving."
         />
         <div className="relative mt-14">
           <div className="absolute left-5 top-0 hidden h-full w-px bg-gradient-to-b from-accent via-violet to-cyan md:left-1/2 md:block" />

@@ -42,7 +42,11 @@ export function PageHero({ eyebrow, title, copy }) {
   );
 }
 
-export function CtaBand({ title = "Ready to create what's next?", copy = "Tell us the idea. We will help you turn it into a product people can use." }) {
+export function CtaBand({
+  title = "Ready to create what's next?",
+  copy = "Tell us the idea. We will help you turn it into a product people can use.",
+  ctaLabel = "Start a Project →",
+}) {
   return (
     <section className="px-5 py-24 md:px-8">
       <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 px-8 py-16 md:px-16">
@@ -51,7 +55,7 @@ export function CtaBand({ title = "Ready to create what's next?", copy = "Tell u
           <h2 className="display section-title max-w-3xl">{title}</h2>
           <p className="mt-5 max-w-xl body-copy">{copy}</p>
           <a href="/contact" className="mt-8 inline-flex rounded-full bg-white px-6 py-3 text-sm font-medium text-black">
-            Start a Project →
+            {ctaLabel}
           </a>
         </div>
       </div>

@@ -12,13 +12,42 @@ import { CtaBand } from "@/components/ui/Section";
 import { getHomeData } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 
-export const metadata = {
-  title: "Mayonity — We Build What Comes Next",
+const HOME_META = {
+  title: "Custom Software & Digital Product Development | Mayonity",
   description:
-    "Mayonity is a software development company creating intelligent digital experiences, powerful web applications, mobile products and e-commerce ecosystems.",
+    "Mayonity builds custom web applications, ecommerce platforms, mobile apps, and WordPress solutions for businesses that need software built around their workflows.",
+};
+
+const HOME_PROCESS = [
+  {
+    number: "01",
+    title: "Understand",
+    description: "Understand the business problem, users and requirements.",
+  },
+  {
+    number: "02",
+    title: "Plan",
+    description: "Define the product structure, technical approach and priorities.",
+  },
+  {
+    number: "03",
+    title: "Build",
+    description: "Design and develop the solution with iterative feedback.",
+  },
+  {
+    number: "04",
+    title: "Launch & Improve",
+    description: "Launch the product and continue improving it as requirements evolve.",
+  },
+];
+
+export const metadata = {
+  title: { absolute: HOME_META.title },
+  description: HOME_META.description,
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Mayonity — We Build What Comes Next",
+    title: HOME_META.title,
+    description: HOME_META.description,
     url: siteUrl("/"),
   },
 };
@@ -36,9 +65,13 @@ export default async function HomePage() {
       <TestimonialsStage testimonials={data.testimonials} />
       <ClientsMarquee clients={data.clients} />
       <TeamPreview team={data.team} />
-      <ProcessTimeline steps={data.process} />
+      <ProcessTimeline steps={HOME_PROCESS} />
       <TechStack technologies={data.technologies} />
-      <CtaBand title="Your next big idea starts here." />
+      <CtaBand
+        title="Have a Business Problem We Can Help Solve?"
+        copy="Tell us what you're building, what isn't working today, or what you want to improve. We'll discuss the right approach for your project."
+        ctaLabel="Discuss Your Project"
+      />
     </>
   );
 }
