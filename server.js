@@ -13,6 +13,6 @@ app.prepare().then(() => {
   createServer((req, res) => {
     handle(req, res, parse(req.url, true));
   }).listen(port, hostname, () => {
-    console.log(`Mayonity ready on ${hostname}:${port}`);
+    console.log(`Mayonity ready. on ${hostname}:${port}`);
   });
 });
