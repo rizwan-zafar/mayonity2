@@ -141,6 +141,8 @@ After editing `prisma/schema.prisma`:
 
 A new table will **not** appear from GitHub Actions alone.
 
+For hand-written production SQL (post-deploy checklist), see **`prisma/sql/production-after-deploy.sql`**. Mark executed blocks in that file and commit so the team knows what ran on live.
+
 ## Health
 
 `/api/health/db` reports whether Prisma can reach MySQL (host/port/database, no password).

@@ -3,7 +3,9 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { SiteChrome } from "@/components/layout/SiteChrome";
+import { Ga4 } from "@/components/analytics/Ga4";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
+import { buildOpenGraphImages } from "@/lib/seo-meta";
 import { getSettings, getSocialLinks, getActiveServices } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 import "./globals.css";
@@ -26,32 +28,42 @@ const syne = Syne({
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
-  title: {
-    default: "Mayonity — Software for What Comes Next",
-    template: "%s · Mayonity",
-  },
-  description:
-    "Mayonity is a software development company creating intelligent digital experiences, web applications, mobile products and e-commerce ecosystems.",
-  openGraph: {
-    type: "website",
-    siteName: "Mayonity",
-    title: "Mayonity — Software for What Comes Next",
-    description:
-      "We build what comes next: intelligent digital experiences, products and technology for businesses ready for the future.",
-    url: siteUrl(),
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Mayonity — Software for What Comes Next",
-    description:
-      "Design + engineering + innovation for companies building the future.",
-  },
-  icons: { icon: "/favicon.svg" },
-  robots: { index: true, follow: true },
-  alternates: { canonical: "/" },
-};
+const FALLBACK_TITLE = "Mayonity — Software for What Comes Next";
+const FALLBACK_DESCRIPTION =
+  "Mayonity is a software development company creating intelligent digital experiences, web applications, mobile products and e-commerce ecosystems.";
+
+export async function generateMetadata() {
+  const settings = await getSettings();
+  const defaultTitle = settings.seoDefaultTitle?.trim() || FALLBACK_TITLE;
+  const defaultDescription = settings.seoDefaultDescription?.trim() || FALLBACK_DESCRIPTION;
+  const images = buildOpenGraphImages();
+
+  return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
+    title: {
+      default: defaultTitle,
+      template: "%s · Mayonity",
+    },
+    description: defaultDescription,
+    openGraph: {
+      type: "website",
+      siteName: settings.siteName?.trim() || "Mayonity",
+      title: defaultTitle,
+      description: defaultDescription,
+      url: siteUrl(),
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: defaultTitle,
+      description: defaultDescription,
+      images: [images[0].url],
+    },
+    icons: { icon: "/favicon.svg" },
+    robots: { index: true, follow: true },
+    alternates: { canonical: "/" },
+  };
+}
 
 export const viewport = {
   themeColor: "#05060a",
@@ -72,6 +84,7 @@ export default async function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <Ga4 />
         <JsonLd data={organizationJsonLd(settings, socials)} />
         <JsonLd data={websiteJsonLd(settings)} />
         <a

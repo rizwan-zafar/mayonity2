@@ -4,19 +4,30 @@ import { CtaBand } from "@/components/ui/Section";
 import { getPortfolioBySlug, getPublishedPortfolio, getRelatedPortfolio } from "@/lib/data";
 import { parseJson, siteUrl } from "@/lib/utils";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { shareImagesMeta } from "@/lib/seo-meta";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const project = await getPortfolioBySlug(slug);
   if (!project) return { title: "Project" };
+  const title = project.seoTitle?.trim() || project.name;
+  const description = project.metaDescription?.trim() || project.shortDesc;
+  const images = shareImagesMeta(project.image);
   return {
-    title: project.name,
-    description: project.shortDesc,
+    title,
+    description,
     alternates: { canonical: `/portfolio/${project.slug}` },
     openGraph: {
-      title: `${project.name} · Mayonity`,
-      description: project.shortDesc,
+      title: `${title} · Mayonity`,
+      description,
       url: siteUrl(`/portfolio/${project.slug}`),
+      ...images.openGraph,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...images.twitter,
     },
   };
 }

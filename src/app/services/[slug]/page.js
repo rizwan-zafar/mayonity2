@@ -1,121 +1,67 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CtaBand } from "@/components/ui/Section";
-import { getServiceBySlug } from "@/lib/data";
-import { parseJson, siteUrl } from "@/lib/utils";
-import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { getServiceBySlug, getSettings } from "@/lib/data";
+import { parseJson } from "@/lib/utils";
+import { JsonLd, breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo";
+import { buildServiceMetadata } from "@/lib/service-metadata";
 import { AppDevelopmentPage } from "./AppDevelopmentPage";
 import { EcommercePage } from "./EcommercePage";
 import { WebDevelopmentPage } from "./WebDevelopmentPage";
 import { WordPressPage } from "./WordPressPage";
 
-const WEB_DEV_META = {
-  title: "Custom Web Applications & Business Software | Mayonity",
-  description:
-    "Mayonity builds custom web applications, internal business tools, customer portals, SaaS platforms, dashboards, integrations, and workflow automation.",
-};
-
-const ECOMMERCE_META = {
-  title: "Custom E-Commerce Development | Mayonity",
-  description:
-    "Mayonity builds custom ecommerce stores, Shopify experiences, headless commerce platforms, mobile commerce solutions, and ecommerce integrations.",
-};
-
-const APP_DEV_META = {
-  title: "Custom Mobile App Development | Mayonity",
-  description:
-    "Mayonity builds custom mobile apps for iOS and Android, including cross-platform applications, customer apps, business apps, ecommerce apps, and API-connected products.",
-};
-
-const WORDPRESS_META = {
-  title: "Custom WordPress Development | Mayonity",
-  description:
-    "Mayonity builds custom WordPress websites, themes, headless WordPress platforms, WooCommerce solutions, and integrations around your business.",
-};
-
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
   if (!service) return { title: "Service" };
-  if (slug === "web-development") {
-    return {
-      title: { absolute: WEB_DEV_META.title },
-      description: WEB_DEV_META.description,
-      alternates: { canonical: "/services/web-development" },
-      openGraph: {
-        title: WEB_DEV_META.title,
-        description: WEB_DEV_META.description,
-        url: siteUrl("/services/web-development"),
-      },
-    };
-  }
-  if (slug === "ecommerce") {
-    return {
-      title: { absolute: ECOMMERCE_META.title },
-      description: ECOMMERCE_META.description,
-      alternates: { canonical: "/services/ecommerce" },
-      openGraph: {
-        title: ECOMMERCE_META.title,
-        description: ECOMMERCE_META.description,
-        url: siteUrl("/services/ecommerce"),
-      },
-    };
-  }
-  if (slug === "app-development") {
-    return {
-      title: { absolute: APP_DEV_META.title },
-      description: APP_DEV_META.description,
-      alternates: { canonical: "/services/app-development" },
-      openGraph: {
-        title: APP_DEV_META.title,
-        description: APP_DEV_META.description,
-        url: siteUrl("/services/app-development"),
-      },
-    };
-  }
-  if (slug === "wordpress-solutions") {
-    return {
-      title: { absolute: WORDPRESS_META.title },
-      description: WORDPRESS_META.description,
-      alternates: { canonical: "/services/wordpress-solutions" },
-      openGraph: {
-        title: WORDPRESS_META.title,
-        description: WORDPRESS_META.description,
-        url: siteUrl("/services/wordpress-solutions"),
-      },
-    };
-  }
-  return {
-    title: service.name,
-    description: service.shortDesc,
-    alternates: { canonical: `/services/${service.slug}` },
-    openGraph: {
-      title: `${service.name} · Mayonity`,
-      description: service.shortDesc,
-      url: siteUrl(`/services/${service.slug}`),
-    },
-  };
+  return buildServiceMetadata(service);
+}
+
+function ServiceSchema({ service, settings }) {
+  return <JsonLd data={serviceJsonLd(service, settings)} />;
 }
 
 export default async function ServiceDetailPage({ params }) {
   const { slug } = await params;
-  const service = await getServiceBySlug(slug);
+  const [service, settings] = await Promise.all([getServiceBySlug(slug), getSettings()]);
   if (!service) notFound();
 
+  const schema = <ServiceSchema service={service} settings={settings} />;
+
   if (slug === "web-development") {
-    return <WebDevelopmentPage service={service} />;
+    return (
+      <>
+        {schema}
+        <WebDevelopmentPage service={service} />
+      </>
+    );
   }
 
   if (slug === "ecommerce") {
-    return <EcommercePage service={service} />;
+    return (
+      <>
+        {schema}
+        <EcommercePage service={service} />
+      </>
+    );
   }
 
   if (slug === "app-development") {
-    return <AppDevelopmentPage service={service} />;
+    return (
+      <>
+        {schema}
+        <AppDevelopmentPage service={service} />
+      </>
+    );
   }
 
   if (slug === "wordpress-solutions") {
-    return <WordPressPage service={service} />;
+    return (
+      <>
+        {schema}
+        <WordPressPage service={service} />
+      </>
+    );
   }
 
   const benefits = parseJson(service.benefits, []);
@@ -124,6 +70,7 @@ export default async function ServiceDetailPage({ params }) {
 
   return (
     <>
+      {schema}
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Home", path: "/" },

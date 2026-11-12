@@ -109,6 +109,30 @@ export function faqPageJsonLd(items) {
   };
 }
 
+export function serviceJsonLd(service, settings) {
+  const description =
+    (service.metaDescription && service.metaDescription.trim()) ||
+    service.shortDesc ||
+    service.description;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: (service.seoTitle && service.seoTitle.trim()) || service.name,
+    description,
+    url: siteUrl(`/services/${service.slug}`),
+    provider: {
+      "@type": "Organization",
+      name: settings.siteName || "Mayonity",
+      url: siteUrl(),
+    },
+    areaServed: [
+      { "@type": "Country", name: "Singapore" },
+      { "@type": "Country", name: "Malaysia" },
+      { "@type": "Country", name: "Australia" },
+    ],
+  };
+}
+
 export function JsonLd({ data }) {
   if (!data) return null;
   return (

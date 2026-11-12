@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 
 function Counter({ value, suffix }) {
   const ref = useRef(null);
-  const [shown, setShown] = useState(0);
+  const [shown, setShown] = useState(null);
 
   useEffect(() => {
     const el = ref.current;
@@ -36,8 +36,10 @@ function Counter({ value, suffix }) {
 
   return (
     <p ref={ref} className="display text-[clamp(2.4rem,5vw,4.6rem)]">
-      {shown.toLocaleString()}
-      {suffix}
+      <span>
+        {(shown ?? value).toLocaleString()}
+        {suffix}
+      </span>
     </p>
   );
 }

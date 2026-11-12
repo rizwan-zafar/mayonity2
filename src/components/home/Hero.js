@@ -9,18 +9,17 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#05060a]/20 via-[#05060a]/55 to-[#05060a]" />
       </div>
       <div className="relative mx-auto flex min-h-[calc(100svh-var(--header-h))] max-w-7xl flex-col justify-end px-5 pb-16 md:px-8 md:pb-20">
-        <p className="font-mono text-xs uppercase tracking-[0.32em] text-cyan">Future-ready digital products</p>
+        <p className="font-mono text-xs uppercase tracking-[0.32em] text-cyan">Software & digital products</p>
         <h1 className="display hero-title mt-6 max-w-5xl text-white">
-          we Build
-          <br />
-          What Comes Next.
+          We Build Custom Software & Digital Product Development
         </h1>
         <p className="mt-7 max-w-xl body-copy">
-          Mayonity is a software development company creating intelligent digital experiences, powerful web applications, mobile products and e-commerce ecosystems for businesses ready for the future.
+          Mayonity builds custom web applications, ecommerce platforms, mobile apps, and WordPress
+          solutions around the way your business works.
         </p>
         <div className="mt-10 flex flex-wrap gap-3">
-          <MagneticButton href="/contact">Start a Project</MagneticButton>
-          <GhostButton href="/portfolio">Explore Our Work</GhostButton>
+          <MagneticButton href="/contact">Discuss Your Project</MagneticButton>
+          <GhostButton href="/portfolio">View Our Work</GhostButton>
         </div>
       </div>
     </section>

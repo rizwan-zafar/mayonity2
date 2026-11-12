@@ -23,6 +23,7 @@ jobs:
       ENV_DATABASE_URL: ${{ secrets.ENV_DATABASE_URL }}
       ENV_AUTH_SECRET: ${{ secrets.ENV_AUTH_SECRET }}
       ENV_NEXT_PUBLIC_SITE_URL: ${{ secrets.ENV_NEXT_PUBLIC_SITE_URL }}
+      ENV_NEXT_PUBLIC_GA_ID: ${{ secrets.ENV_NEXT_PUBLIC_GA_ID }}
       ENV_SMTP_HOST: ${{ secrets.ENV_SMTP_HOST }}
       ENV_SMTP_PORT: ${{ secrets.ENV_SMTP_PORT }}
       ENV_SMTP_USER: ${{ secrets.ENV_SMTP_USER }}
@@ -128,6 +129,9 @@ jobs:
             printf "DATABASE_URL=%s\n" "$(env_quote "$ENV_DATABASE_URL")"
             printf "AUTH_SECRET=%s\n" "$(env_quote "$ENV_AUTH_SECRET")"
             printf "NEXT_PUBLIC_SITE_URL=%s\n" "$(env_quote "$ENV_NEXT_PUBLIC_SITE_URL")"
+            if [ -n "${ENV_NEXT_PUBLIC_GA_ID:-}" ]; then
+              printf "NEXT_PUBLIC_GA_ID=%s\n" "$(env_quote "$ENV_NEXT_PUBLIC_GA_ID")"
+            fi
             printf "NODE_ENV=production\n"
             if [ -n "${ENV_SMTP_HOST:-}" ]; then
               printf "SMTP_HOST=%s\n" "$(env_quote "$ENV_SMTP_HOST")"
