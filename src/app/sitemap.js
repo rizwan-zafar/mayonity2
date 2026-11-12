@@ -18,7 +18,6 @@ function staticEntries() {
     "/terms-and-conditions",
   ].map((path) => ({
     url: siteUrl(path || "/"),
-    lastModified: new Date(),
     changeFrequency: path === "/blog" ? "weekly" : "monthly",
     priority: path === "" ? 1 : 0.7,
   }));
@@ -51,19 +50,19 @@ export default async function sitemap() {
       ...entries,
       ...services.map((item) => ({
         url: siteUrl(`/services/${item.slug}`),
-        lastModified: item.updatedAt,
+        lastModified: new Date(item.updatedAt),
         changeFrequency: "monthly",
         priority: 0.8,
       })),
       ...projects.map((item) => ({
         url: siteUrl(`/portfolio/${item.slug}`),
-        lastModified: item.updatedAt,
+        lastModified: new Date(item.updatedAt),
         changeFrequency: "monthly",
         priority: 0.8,
       })),
       ...posts.map((item) => ({
         url: siteUrl(`/blog/${item.slug}`),
-        lastModified: item.updatedAt,
+        lastModified: new Date(item.updatedAt),
         changeFrequency: "weekly",
         priority: 0.6,
       })),

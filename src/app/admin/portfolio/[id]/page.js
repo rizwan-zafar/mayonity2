@@ -21,6 +21,8 @@ export default async function PortfolioFormPage({ params }) {
       <h1 className="display text-4xl">{item ? "Edit project" : "New project"}</h1>
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <Field label="Name" name="name" defaultValue={item?.name} required />
+      <Field label="SEO title" name="seoTitle" defaultValue={item?.seoTitle || ""} />
+      <Field label="Meta description" name="metaDescription" defaultValue={item?.metaDescription || ""} textarea />
       <Field label="Slug" name="slug" defaultValue={item?.slug} />
       <Field label="Client" name="client" defaultValue={item?.client} />
       <Field label="Industry" name="industry" defaultValue={item?.industry} />

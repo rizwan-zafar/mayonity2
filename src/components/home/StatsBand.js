@@ -36,7 +36,7 @@ function Counter({ value, suffix }) {
 
   return (
     <p ref={ref} className="display text-[clamp(2.4rem,5vw,4.6rem)]">
-      <span className={shown === null ? "opacity-0" : undefined}>
+      <span>
         {(shown ?? value).toLocaleString()}
         {suffix}
       </span>

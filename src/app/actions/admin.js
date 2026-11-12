@@ -74,6 +74,8 @@ export async function saveService(formData) {
   const data = {
     name,
     slug: slugify(formData.get("slug") || name),
+    seoTitle: String(formData.get("seoTitle") || "").trim() || null,
+    metaDescription: String(formData.get("metaDescription") || "").trim() || null,
     number: String(formData.get("number") || ""),
     shortDesc: String(formData.get("shortDesc") || ""),
     description: String(formData.get("description") || ""),
@@ -107,6 +109,8 @@ export async function savePortfolio(formData) {
   const data = {
     name,
     slug: slugify(formData.get("slug") || name),
+    seoTitle: String(formData.get("seoTitle") || "").trim() || null,
+    metaDescription: String(formData.get("metaDescription") || "").trim() || null,
     client: String(formData.get("client") || ""),
     industry: String(formData.get("industry") || ""),
     category: String(formData.get("category") || "Web"),

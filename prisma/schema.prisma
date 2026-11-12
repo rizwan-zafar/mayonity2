@@ -20,12 +20,14 @@ model User {
 }
 
 model Service {
-  id           Int         @id @default(autoincrement())
-  slug         String      @unique
-  name         String
-  number       String
-  shortDesc    String      @db.Text
-  description  String      @db.Text
+  id               Int         @id @default(autoincrement())
+  slug             String      @unique
+  name             String
+  seoTitle         String?
+  metaDescription  String?     @db.Text
+  number           String
+  shortDesc        String      @db.Text
+  description      String      @db.Text
   whatWeBuild  String      @db.Text
   approach     String      @db.Text
   technologies String      @db.Text
@@ -42,10 +44,12 @@ model Service {
 }
 
 model Portfolio {
-  id           Int               @id @default(autoincrement())
-  slug         String            @unique
-  name         String
-  client       String
+  id               Int               @id @default(autoincrement())
+  slug             String            @unique
+  name             String
+  seoTitle         String?
+  metaDescription  String?           @db.Text
+  client           String
   industry     String
   category     String
   shortDesc    String            @db.Text

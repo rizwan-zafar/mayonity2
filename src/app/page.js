@@ -11,6 +11,7 @@ import { TechStack } from "@/components/home/TechStack";
 import { CtaBand } from "@/components/ui/Section";
 import { getHomeData } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
+import { buildOpenGraphImages } from "@/lib/seo-meta";
 
 const HOME_META = {
   title: "Custom Software & Digital Product Development | Mayonity",
@@ -41,6 +42,8 @@ const HOME_PROCESS = [
   },
 ];
 
+const homeImages = buildOpenGraphImages();
+
 export const metadata = {
   title: { absolute: HOME_META.title },
   description: HOME_META.description,
@@ -49,6 +52,13 @@ export const metadata = {
     title: HOME_META.title,
     description: HOME_META.description,
     url: siteUrl("/"),
+    images: homeImages,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: HOME_META.title,
+    description: HOME_META.description,
+    images: [homeImages[0].url],
   },
 };
 

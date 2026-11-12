@@ -4,26 +4,31 @@ import { getPostBySlug, getRelatedPosts, getSettings } from "@/lib/data";
 import { extractHeadings, renderMarkdown } from "@/lib/markdown";
 import { formatDate, siteUrl } from "@/lib/utils";
 import { JsonLd, articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
-import { prisma } from "@/lib/prisma";
+import { shareImagesMeta } from "@/lib/seo-meta";
+import { incrementBlogPostViews } from "@/lib/blog-views";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
   if (!post) return { title: "Article" };
+  const title = post.seoTitle || post.title;
+  const images = shareImagesMeta(post.featuredImage);
   return {
-    title: post.seoTitle || post.title,
+    title,
     description: post.metaDescription,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
       type: "article",
-      title: post.seoTitle || post.title,
+      title,
       description: post.metaDescription,
       url: siteUrl(`/blog/${post.slug}`),
+      ...images.openGraph,
     },
     twitter: {
       card: "summary_large_image",
-      title: post.seoTitle || post.title,
+      title,
       description: post.metaDescription,
+      ...images.twitter,
     },
   };
 }
@@ -35,10 +40,7 @@ export default async function BlogDetailPage({ params }) {
   const [related, settings] = await Promise.all([getRelatedPosts(post), getSettings()]);
   const html = renderMarkdown(post.content);
   const toc = extractHeadings(post.content);
-  await prisma.blogPost.update({
-    where: { id: post.id },
-    data: { views: { increment: 1 } },
-  }).catch(() => {});
+  await incrementBlogPostViews(post.id).catch(() => {});
 
   const share = siteUrl(`/blog/${post.slug}`);
 

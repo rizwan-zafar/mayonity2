@@ -17,6 +17,8 @@ export default async function ServiceFormPage({ params }) {
       <h1 className="display text-4xl">{item ? "Edit service" : "New service"}</h1>
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <Field label="Name" name="name" defaultValue={item?.name} required />
+      <Field label="SEO title" name="seoTitle" defaultValue={item?.seoTitle || ""} />
+      <Field label="Meta description" name="metaDescription" defaultValue={item?.metaDescription || ""} textarea />
       <Field label="Slug" name="slug" defaultValue={item?.slug} />
       <Field label="Number" name="number" defaultValue={item?.number} />
       <Field label="Category" name="category" defaultValue={item?.category} />
