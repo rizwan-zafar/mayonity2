@@ -2,14 +2,15 @@ import Link from "next/link";
 import { Logo } from "@/components/layout/Logo";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 
-export function Footer({ settings, socials, services }) {
+export function Footer({ settings, socials, services, locations = [] }) {
   const year = new Date().getFullYear();
   const featured = (services || []).slice(0, 5);
+  const locationCols = locations.length ? "md:grid-cols-[1.3fr_1fr_1fr_1fr_1fr]" : "md:grid-cols-[1.3fr_1fr_1fr_1fr]";
 
   return (
     <footer className="relative mt-24 border-t border-white/10">
       <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
-      <div className="mx-auto grid max-w-7xl gap-12 px-5 py-16 md:grid-cols-[1.3fr_1fr_1fr_1fr] md:px-8">
+      <div className={`mx-auto grid max-w-7xl gap-12 px-5 py-16 ${locationCols} md:px-8`}>
         <div>
           <Logo />
           <p className="mt-5 max-w-sm body-copy">
@@ -38,6 +39,20 @@ export function Footer({ settings, socials, services }) {
             ))}
           </ul>
         </div>
+        {locations.length ? (
+          <div>
+            <p className="mb-4 font-mono text-xs uppercase tracking-[0.22em] text-muted">Locations</p>
+            <ul className="grid gap-2 text-sm text-muted">
+              {locations.map((location) => (
+                <li key={location.slug}>
+                  <Link href={`/${location.slug}`} className="hover:text-white">
+                    {location.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
         <div>
           <p className="mb-4 font-mono text-xs uppercase tracking-[0.22em] text-muted">Resources</p>
           <ul className="grid gap-2 text-sm text-muted">

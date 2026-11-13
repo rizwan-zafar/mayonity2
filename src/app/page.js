@@ -8,6 +8,7 @@ import { ClientsMarquee } from "@/components/home/ClientsMarquee";
 import { TeamPreview } from "@/components/home/TeamPreview";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import { TechStack } from "@/components/home/TechStack";
+import { LocationsBand } from "@/components/home/LocationsBand";
 import { CtaBand } from "@/components/ui/Section";
 import { getHomeData } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
@@ -77,6 +78,7 @@ export default async function HomePage() {
       <TeamPreview team={data.team} />
       <ProcessTimeline steps={HOME_PROCESS} />
       <TechStack technologies={data.technologies} />
+      <LocationsBand locations={data.locations} />
       <CtaBand
         title="Have a Business Problem We Can Help Solve?"
         copy="Tell us what you're building, what isn't working today, or what you want to improve. We'll discuss the right approach for your project."

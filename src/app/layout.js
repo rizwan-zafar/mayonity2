@@ -6,7 +6,7 @@ import { SiteChrome } from "@/components/layout/SiteChrome";
 import { Ga4 } from "@/components/analytics/Ga4";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { buildOpenGraphImages } from "@/lib/seo-meta";
-import { getSettings, getSocialLinks, getActiveServices } from "@/lib/data";
+import { getActiveLocations, getSettings, getSocialLinks, getActiveServices } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 import "./globals.css";
 
@@ -72,10 +72,11 @@ export const viewport = {
 };
 
 export default async function RootLayout({ children }) {
-  const [settings, socials, services] = await Promise.all([
+  const [settings, socials, services, locations] = await Promise.all([
     getSettings(),
     getSocialLinks(),
     getActiveServices(),
+    getActiveLocations(),
   ]);
 
   return (
@@ -101,7 +102,7 @@ export default async function RootLayout({ children }) {
           {children}
         </main>
         <SiteChrome>
-          <Footer settings={settings} socials={socials} services={services} />
+          <Footer settings={settings} socials={socials} services={services} locations={locations} />
         </SiteChrome>
       </body>
     </html>
