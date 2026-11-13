@@ -1,4 +1,9 @@
-import { getActiveServices, getPublishedPortfolio, getPublishedPosts } from "@/lib/data";
+import {
+  getActiveLocations,
+  getActiveServices,
+  getPublishedPortfolio,
+  getPublishedPosts,
+} from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
@@ -40,14 +45,21 @@ export default async function sitemap() {
   }
 
   try {
-    const [services, projects, { posts }] = await Promise.all([
+    const [services, projects, { posts }, locations] = await Promise.all([
       getActiveServices(),
       getPublishedPortfolio(),
       getPublishedPosts({ take: 200 }),
+      getActiveLocations(),
     ]);
 
     return [
       ...entries,
+      ...locations.map((item) => ({
+        url: siteUrl(`/${item.slug}`),
+        lastModified: new Date(item.updatedAt),
+        changeFrequency: "monthly",
+        priority: 0.8,
+      })),
       ...services.map((item) => ({
         url: siteUrl(`/services/${item.slug}`),
         lastModified: new Date(item.updatedAt),

@@ -17,6 +17,26 @@ export const getActiveServices = cache(async () => {
   });
 });
 
+export const getActiveLocations = cache(async () => {
+  return prisma.location.findMany({
+    where: { status: "active" },
+    orderBy: { sortOrder: "asc" },
+  });
+});
+
+export async function getLocationBySlug(slug) {
+  return prisma.location.findFirst({
+    where: { slug, status: "active" },
+  });
+}
+
+export const getFeaturedPortfolio = cache(async () => {
+  return prisma.portfolio.findMany({
+    where: { status: "published", featured: true },
+    orderBy: { sortOrder: "asc" },
+  });
+});
+
 export const getServiceBySlug = cache(async (slug) => {
   return prisma.service.findFirst({
     where: { slug, status: "active" },
@@ -101,6 +121,7 @@ export async function getHomeData() {
     settings,
     socials,
     services,
+    locations,
     stats,
     portfolio,
     testimonials,
@@ -112,6 +133,7 @@ export async function getHomeData() {
     getSettings(),
     getSocialLinks(),
     getActiveServices(),
+    getActiveLocations(),
     getStatistics(),
     prisma.portfolio.findMany({
       where: { status: "published" },
@@ -133,6 +155,7 @@ export async function getHomeData() {
     settings,
     socials,
     services,
+    locations,
     stats,
     portfolio,
     testimonials,

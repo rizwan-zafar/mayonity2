@@ -13,6 +13,7 @@ import {
 } from "@/lib/auth";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { slugify } from "@/lib/utils";
+import { isReservedLocationSlug } from "@/lib/locations";
 import { revalidatePath } from "next/cache";
 
 function jsonList(value) {
@@ -114,6 +115,50 @@ export async function deleteService(formData) {
   await guard();
   await prisma.service.delete({ where: { id: Number(formData.get("id")) } });
   revalidatePublic();
+}
+
+export async function saveLocation(formData) {
+  await guard();
+  const id = Number(formData.get("id") || 0);
+  const name = String(formData.get("name") || "");
+  const slug = slugify(formData.get("slug") || name);
+  if (isReservedLocationSlug(slug)) {
+    redirect("/admin/locations?error=reserved-slug");
+  }
+  const data = {
+    name,
+    slug,
+    seoTitle: String(formData.get("seoTitle") || "").trim() || null,
+    metaDescription: String(formData.get("metaDescription") || "").trim() || null,
+    status: String(formData.get("status") || "draft"),
+    sortOrder: Number(formData.get("sortOrder") || 0),
+    eyebrow: String(formData.get("eyebrow") || "").trim() || null,
+    h1: String(formData.get("h1") || ""),
+    intro: String(formData.get("intro") || ""),
+    whyTitle: String(formData.get("whyTitle") || "").trim() || null,
+    whyBody: String(formData.get("whyBody") || ""),
+    processTitle: String(formData.get("processTitle") || "").trim() || null,
+    processBody: String(formData.get("processBody") || ""),
+    industries: jsonList(formData.get("industries")),
+    cities: jsonList(formData.get("cities")),
+    faqs: faqsFromForm(formData),
+  };
+  if (id) await prisma.location.update({ where: { id }, data });
+  else await prisma.location.create({ data });
+  revalidatePublic();
+  revalidatePath(`/${slug}`);
+  redirect("/admin/locations");
+}
+
+export async function deleteLocation(formData) {
+  await guard();
+  const item = await prisma.location.findUnique({
+    where: { id: Number(formData.get("id")) },
+    select: { slug: true },
+  });
+  await prisma.location.delete({ where: { id: Number(formData.get("id")) } });
+  revalidatePublic();
+  if (item?.slug) revalidatePath(`/${item.slug}`);
 }
 
 export async function savePortfolio(formData) {

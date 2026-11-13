@@ -109,6 +109,27 @@ export function faqPageJsonLd(items) {
   };
 }
 
+export function locationServiceJsonLd(location, settings) {
+  const description =
+    (location.metaDescription && location.metaDescription.trim()) || location.intro;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: (location.seoTitle && location.seoTitle.trim()) || location.h1,
+    description,
+    url: siteUrl(`/${location.slug}`),
+    provider: {
+      "@type": "Organization",
+      name: settings.siteName || "Mayonity",
+      url: siteUrl(),
+    },
+    areaServed: {
+      "@type": "Country",
+      name: location.name,
+    },
+  };
+}
+
 export function serviceJsonLd(service, settings) {
   const description =
     (service.metaDescription && service.metaDescription.trim()) ||

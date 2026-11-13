@@ -47,3 +47,11 @@ export function readingTimeFrom(content) {
     .filter(Boolean).length;
   return Math.max(1, Math.round(words / 200));
 }
+
+export function splitParagraphs(text) {
+  if (!text) return [];
+  return String(text)
+    .split(/\n\s*\n/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}

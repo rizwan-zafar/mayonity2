@@ -237,3 +237,25 @@ model ProcessStep {
   description String @db.Text
   sortOrder   Int    @default(0)
 }
+
+model Location {
+  id              Int      @id @default(autoincrement())
+  name            String
+  slug            String   @unique
+  status          String   @default("draft")
+  sortOrder       Int      @default(0)
+  seoTitle        String?
+  metaDescription String?  @db.Text
+  eyebrow         String?
+  h1              String
+  intro           String   @db.Text
+  whyTitle        String?
+  whyBody         String   @db.Text
+  processTitle    String?
+  processBody     String   @db.Text
+  industries      String   @default("[]") @db.Text
+  cities          String   @default("[]") @db.Text
+  faqs            String   @default("[]") @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
