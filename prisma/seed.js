@@ -236,8 +236,8 @@ async function main() {
       sortOrder: 8,
     },
     {
-      slug: "suggestions-solutions",
-      name: "Suggestions & Solutions",
+      slug: "it-consulting",
+      name: "IT Consulting & Digital Strategy",
       number: "09",
       category: "Other",
       icon: "compass",
@@ -302,7 +302,7 @@ async function main() {
       features: json(["Live shipment states", "Exception queues", "Client portal", "Audit history"]),
       results: "Teams stopped reconciling files. Clients stopped asking 'where is it?'",
       technologies: json(["Next.js", "Node.js", "MySQL", "APIs"]),
-      services: json(["Website Development", "UI/UX", "Suggestions & Solutions"]),
+      services: json(["Website Development", "UI/UX", "IT Consulting & Digital Strategy"]),
       sortOrder: 2,
     },
     {

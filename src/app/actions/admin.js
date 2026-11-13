@@ -24,6 +24,19 @@ function jsonList(value) {
   );
 }
 
+function faqsFromForm(formData) {
+  const questions = formData.getAll("faqQuestion");
+  const answers = formData.getAll("faqAnswer");
+  const items = [];
+  for (let i = 0; i < questions.length; i++) {
+    const question = String(questions[i] || "").trim();
+    const answer = String(answers[i] || "").trim();
+    if (!question || !answer) continue;
+    items.push({ question, answer, sortOrder: items.length });
+  }
+  return JSON.stringify(items);
+}
+
 function revalidatePublic() {
   revalidatePath("/", "layout");
   revalidatePath("/admin", "layout");
@@ -84,6 +97,7 @@ export async function saveService(formData) {
     technologies: jsonList(formData.get("technologies")),
     benefits: jsonList(formData.get("benefits")),
     features: jsonList(formData.get("features")),
+    faqs: faqsFromForm(formData),
     icon: String(formData.get("icon") || "spark"),
     image: String(formData.get("image") || "") || null,
     category: String(formData.get("category") || "Web"),

@@ -15,6 +15,15 @@ const nextConfig = {
     ],
   },
   poweredByHeader: false,
+  async redirects() {
+    return [
+      {
+        source: "/services/suggestions-solutions",
+        destination: "/services/it-consulting",
+        statusCode: 301,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

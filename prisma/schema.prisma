@@ -33,6 +33,7 @@ model Service {
   technologies String      @db.Text
   benefits     String      @db.Text
   features     String      @db.Text
+  faqs         String      @default("[]") @db.Text
   icon         String      @default("spark")
   image        String?
   category     String      @default("Web")
