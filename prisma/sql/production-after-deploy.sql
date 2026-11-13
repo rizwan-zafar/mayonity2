@@ -52,6 +52,35 @@ ALTER TABLE `Portfolio`
 
 
 -- -----------------------------------------------------------------------------
+-- 3) REQUIRED — Service FAQs column (run once)
+--    Status: [ ] not run
+-- -----------------------------------------------------------------------------
+
+-- CHECK (optional):
+-- SHOW COLUMNS FROM `Service` LIKE 'faqs';
+
+-- ALTER TABLE `Service`
+--   ADD COLUMN `faqs` TEXT NULL AFTER `features`;
+
+-- UPDATE `Service` SET `faqs` = '[]' WHERE `faqs` IS NULL;
+
+-- ALTER TABLE `Service`
+--   MODIFY COLUMN `faqs` TEXT NOT NULL;
+
+
+-- -----------------------------------------------------------------------------
+-- 4) REQUIRED — Rename suggestions-solutions service slug (run once)
+--    Status: [ ] not run
+-- -----------------------------------------------------------------------------
+
+UPDATE `Service`
+SET
+  `slug` = 'it-consulting',
+  `name` = 'IT Consulting & Digital Strategy'
+WHERE `slug` = 'suggestions-solutions';
+
+
+-- -----------------------------------------------------------------------------
 -- No other SQL required for:
 --   - sitemap static URLs (no lastModified)
 --   - view counter without touching updatedAt

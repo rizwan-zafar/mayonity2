@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CtaBand } from "@/components/ui/Section";
 import { getServiceBySlug, getSettings } from "@/lib/data";
 import { parseJson } from "@/lib/utils";
-import { JsonLd, breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo";
+import { JsonLd, breadcrumbJsonLd, faqPageJsonLd, serviceJsonLd } from "@/lib/seo";
 import { buildServiceMetadata } from "@/lib/service-metadata";
 import { AppDevelopmentPage } from "./AppDevelopmentPage";
 import { EcommercePage } from "./EcommercePage";
@@ -67,10 +67,14 @@ export default async function ServiceDetailPage({ params }) {
   const benefits = parseJson(service.benefits, []);
   const technologies = parseJson(service.technologies, []);
   const features = parseJson(service.features, []);
+  const faqs = parseJson(service.faqs, [])
+    .filter((item) => item?.question && item?.answer)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
 
   return (
     <>
       {schema}
+      {faqs.length ? <JsonLd data={faqPageJsonLd(faqs)} /> : null}
       <JsonLd
         data={breadcrumbJsonLd([
           { name: "Home", path: "/" },
@@ -127,6 +131,19 @@ export default async function ServiceDetailPage({ params }) {
           </>
         ) : null}
       </section>
+      {faqs.length ? (
+        <section className="mx-auto max-w-7xl px-5 pb-16 md:px-8">
+          <h2 className="display text-4xl">Frequently asked questions</h2>
+          <div className="mt-8 grid gap-8">
+            {faqs.map((item) => (
+              <div key={item.question}>
+                <h3 className="display text-2xl">{item.question}</h3>
+                <p className="mt-3 text-muted">{item.answer}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      ) : null}
       {service.portfolios?.length ? (
         <section className="mx-auto max-w-7xl px-5 pb-10 md:px-8">
           <h2 className="display text-4xl">Related projects</h2>

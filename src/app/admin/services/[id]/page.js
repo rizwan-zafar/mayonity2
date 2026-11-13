@@ -4,7 +4,16 @@ import { redirect } from "next/navigation";
 import { saveService } from "@/app/actions/admin";
 import { Field } from "@/components/admin/AdminShell";
 import { UploadField } from "@/components/admin/UploadField";
+import { ServiceFaqEditor } from "@/components/admin/ServiceFaqEditor";
 import { parseJson } from "@/lib/utils";
+
+function parseServiceFaqs(value) {
+  const items = parseJson(value, []);
+  if (!Array.isArray(items)) return [];
+  return [...items]
+    .filter((item) => item && typeof item === "object")
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+}
 
 export default async function ServiceFormPage({ params }) {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -33,6 +42,7 @@ export default async function ServiceFormPage({ params }) {
       <Field label="Technologies (one per line)" name="technologies" defaultValue={lines(item?.technologies)} textarea />
       <Field label="Benefits" name="benefits" defaultValue={lines(item?.benefits)} textarea />
       <Field label="Features" name="features" defaultValue={lines(item?.features)} textarea />
+      <ServiceFaqEditor defaultItems={parseServiceFaqs(item?.faqs)} />
       <button className="rounded-full bg-white px-5 py-3 text-sm text-black">Save</button>
     </form>
   );
