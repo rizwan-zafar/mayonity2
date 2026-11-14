@@ -1,6 +1,5 @@
 import { sendMail } from "@/lib/mail";
-
-const ADMIN_INBOX = "mayonitynetwork@gmail.com";
+import { DEFAULT_NOTIFY_EMAIL } from "@/lib/notify-email";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -53,20 +52,21 @@ function layout(title, bodyHtml) {
 </html>`;
 }
 
-function userEmail(data) {
+function userEmail(data, contactAddress = DEFAULT_NOTIFY_EMAIL) {
   const first = data.name.split(" ")[0] || data.name;
+  const urgent = escapeHtml(contactAddress);
   const html = layout(
     "We received your message",
     `<p>Dear ${escapeHtml(first)},</p>
      <p>Thank you for writing to Mayonity. This is a confirmation that your enquiry has been received successfully.</p>
-     <p>A member of our team will review your note and get back to you shortly. If your matter is urgent, you may also reach us at <a href="mailto:mayonitynetwork@gmail.com" style="color:#0b0d14;">mayonitynetwork@gmail.com</a>.</p>
+     <p>A member of our team will review your note and get back to you shortly. If your matter is urgent, you may also reach us at <a href="mailto:${urgent}" style="color:#0b0d14;">${urgent}</a>.</p>
      <p style="margin-top:28px;">With kind regards,<br /><strong>The Mayonity team</strong></p>`
   );
   const text = `Dear ${first},
 
 Thank you for writing to Mayonity. This is a confirmation that your enquiry has been received successfully.
 
-A member of our team will review your note and get back to you shortly. If your matter is urgent, you may also reach us at mayonitynetwork@gmail.com.
+A member of our team will review your note and get back to you shortly. If your matter is urgent, you may also reach us at ${contactAddress}.
 
 With kind regards,
 The Mayonity team`;
@@ -94,7 +94,7 @@ function adminEmail(data) {
 
   const html = layout(
     "New Contact Us enquiry",
-    `<p>Someone submitted the Contact Us form on mayonity.com. Details are below.</p>
+    `<p>Someone submitted the Contact Us form. Details are below.</p>
      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px;">${rows}</table>
      <p style="margin-top:24px;font-size:14px;color:#6b7280;">This message was generated automatically. Reply directly to the sender using their email address.</p>`
   );
@@ -112,8 +112,10 @@ ${field("Message", data.message)}`;
   return { html, text };
 }
 
-export async function sendContactNotificationEmails(data) {
-  const user = userEmail(data);
+export async function sendContactNotificationEmails(data, { notifyEmail, contactEmail } = {}) {
+  const inbox = notifyEmail?.trim() || DEFAULT_NOTIFY_EMAIL;
+  const publicContact = contactEmail?.trim() || inbox;
+  const user = userEmail(data, publicContact);
   const admin = adminEmail(data);
 
   const results = await Promise.allSettled([
@@ -124,7 +126,7 @@ export async function sendContactNotificationEmails(data) {
       text: user.text,
     }),
     sendMail({
-      to: ADMIN_INBOX,
+      to: inbox,
       subject: `New Contact Us enquiry from ${data.name}`,
       html: admin.html,
       text: admin.text,
@@ -132,9 +134,20 @@ export async function sendContactNotificationEmails(data) {
     }),
   ]);
 
-  for (const result of results) {
-    if (result.status === "rejected") {
-      console.error("Contact email failed:", result.reason);
+  const labels = ["visitor", "admin"];
+  const sent = { visitor: false, admin: false };
+  for (const [index, result] of results.entries()) {
+    const label = labels[index];
+  if (result.status === "fulfilled" && result.value === true) {
+      sent[label] = true;
+    } else if (result.status === "fulfilled" && result.value === false) {
+      console.warn(`Contact email not sent (${label}): SMTP misconfigured or send returned false`);
+    } else if (result.status === "rejected") {
+      console.error(`Contact email failed (${label}):`, result.reason);
     }
   }
+  if (!sent.admin) {
+    console.warn("Admin notification target was:", inbox);
+  }
+  return sent;
 }

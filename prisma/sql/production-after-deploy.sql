@@ -130,6 +130,16 @@ ALTER TABLE `Portfolio`
 
 
 -- -----------------------------------------------------------------------------
+-- 7) OPTIONAL — Site contact email (Settings → Email)
+--    Status: [ ] not run
+-- -----------------------------------------------------------------------------
+
+-- UPDATE `SiteSetting`
+-- SET `value` = 'hello@mayonity.com'
+-- WHERE `key` = 'email' AND `value` = 'mayonitynetwork@gmail.com';
+
+
+-- -----------------------------------------------------------------------------
 -- No other SQL required for:
 --   - sitemap static URLs (no lastModified)
 --   - view counter without touching updatedAt

@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { contactSchema, newsletterSchema } from "@/lib/validation";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { sendContactNotificationEmails } from "@/lib/contact-emails";
+import { getSettings } from "@/lib/data";
+import { resolveAdminNotifyEmail, resolvePublicContactEmail } from "@/lib/notify-email";
 
 export async function submitContact(prev, formData) {
   const payload = {
@@ -51,7 +53,12 @@ export async function submitContact(prev, formData) {
   });
 
   try {
-    await sendContactNotificationEmails(parsed.data);
+    const settings = await getSettings();
+    const notifyEmail = resolveAdminNotifyEmail(settings);
+    await sendContactNotificationEmails(parsed.data, {
+      notifyEmail,
+      contactEmail: resolvePublicContactEmail(settings),
+    });
   } catch (error) {
     console.error("Contact notification emails failed:", error);
   }

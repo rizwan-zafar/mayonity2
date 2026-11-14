@@ -5,7 +5,7 @@ import { submitContact } from "@/app/actions/public";
 
 const initial = { ok: false, error: "", fieldErrors: {} };
 
-export function ContactForm({ services }) {
+export function ContactForm({ services, contactEmail = "hello@mayonity.com" }) {
   const [state, action, pending] = useActionState(submitContact, initial);
 
   if (state.ok) {
@@ -14,7 +14,11 @@ export function ContactForm({ services }) {
         <p className="font-mono text-xs uppercase tracking-[0.22em] text-cyan">Received</p>
         <h2 className="display mt-4 text-4xl">The idea is in. We’ll be in touch.</h2>
         <p className="mt-4 max-w-md text-muted">
-          A producer at Mayonity will read this personally. If it is urgent, write to mayonitynetwork@gmail.com.
+          A producer at Mayonity will read this personally. If it is urgent, write to{" "}
+          <a href={`mailto:${contactEmail}`} className="text-cyan hover:underline">
+            {contactEmail}
+          </a>
+          .
         </p>
       </div>
     );

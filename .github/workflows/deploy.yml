@@ -141,6 +141,9 @@ jobs:
               printf "SMTP_FROM=%s\n" "$(env_quote "${ENV_SMTP_FROM:-$ENV_SMTP_USER}")"
               printf "SMTP_SECURE=%s\n" "$(env_quote "${ENV_SMTP_SECURE:-false}")"
               printf "SMTP_TLS_REJECT_UNAUTHORIZED=%s\n" "$(env_quote "${ENV_SMTP_TLS_REJECT_UNAUTHORIZED:-false}")"
+              if [ -n "${ENV_ADMIN_NOTIFY_EMAIL:-}" ]; then
+                printf "ADMIN_NOTIFY_EMAIL=%s\n" "$(env_quote "$ENV_ADMIN_NOTIFY_EMAIL")"
+              fi
             fi
           } > "$RUNNER_TEMP/cpanel.env"
 

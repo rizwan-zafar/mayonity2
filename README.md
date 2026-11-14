@@ -70,12 +70,15 @@ Default seeded admin (change after first login): `admin@mayonity.com`.
 | `SMTP_HOST` | Optional locally | cPanel mail host, e.g. `mail.mayonity.com` |
 | `SMTP_PORT` | `587` | `587` or `465` |
 | `SMTP_USER` / `SMTP_PASS` | Optional | Mailbox used to send |
-| `SMTP_FROM` | Optional | e.g. `Mayonity <mayonitynetwork@gmail.com>` |
+| `SMTP_FROM` | Optional | e.g. `Mayonity <hello@mayonity.com>` |
 | `SMTP_SECURE` | `false` | `true` if port is `465` |
+| `ADMIN_NOTIFY_EMAIL` | Optional | Overrides Settings → Email for admin contact notifications |
 
-Do not commit `.env` or SSH private keys.
+Do not commit `.env` or SSH private keys. Copy `.env.example` to `.env` for local work.
 
-Contact form submissions still save to the database. After a successful save, the app sends a confirmation to the visitor and a notification to `mayonitynetwork@gmail.com`. If SMTP is missing or sending fails, the form still succeeds.
+Contact form submissions still save to the database. After a successful save, the app emails the visitor a confirmation and sends a notification to **Admin → Settings → Email** (default `hello@mayonity.com`, or `ADMIN_NOTIFY_EMAIL`). If SMTP is missing or sending fails, the form still succeeds.
+
+**Local SMTP check:** `npm run test:smtp` (requires SMTP vars in `.env`).
 
 Prisma talks to MySQL through `@prisma/adapter-mariadb` (`engineType = "client"`). The Rust query engine panics on this cPanel OpenSSL stack.
 
