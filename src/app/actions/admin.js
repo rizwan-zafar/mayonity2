@@ -312,6 +312,12 @@ export async function savePost(formData) {
     readingTime: Number(formData.get("readingTime") || 5),
     categoryId: Number(formData.get("categoryId")),
     authorId: Number(session.sub),
+    teamMemberId: (() => {
+      const raw = String(formData.get("teamMemberId") || "").trim();
+      if (!raw) return null;
+      const id = Number(raw);
+      return Number.isFinite(id) && id > 0 ? id : null;
+    })(),
   };
   const tagIds = formData
     .getAll("tagIds")

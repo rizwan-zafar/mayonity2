@@ -100,20 +100,21 @@ model Client {
 }
 
 model TeamMember {
-  id        Int      @id @default(autoincrement())
+  id        Int        @id @default(autoincrement())
   name      String
   position  String
-  bio       String   @db.Text
+  bio       String     @db.Text
   photo     String
-  skills    String   @db.Text
+  skills    String     @db.Text
   linkedin  String?
   twitter   String?
   github    String?
   dribbble  String?
-  sortOrder Int      @default(0)
-  status    String   @default("active")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  sortOrder Int        @default(0)
+  status    String     @default("active")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  blogPosts BlogPost[]
 }
 
 model Testimonial {
@@ -161,6 +162,8 @@ model BlogPost {
   views           Int           @default(0)
   authorId        Int
   author          User          @relation(fields: [authorId], references: [id])
+  teamMemberId    Int?
+  teamMember      TeamMember?   @relation(fields: [teamMemberId], references: [id], onDelete: SetNull)
   categoryId      Int
   category        BlogCategory  @relation(fields: [categoryId], references: [id])
   tags            BlogPostTag[]
@@ -168,6 +171,7 @@ model BlogPost {
   updatedAt       DateTime      @updatedAt
 
   @@index([authorId])
+  @@index([teamMemberId])
   @@index([categoryId])
 }
 
