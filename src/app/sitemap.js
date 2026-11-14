@@ -6,8 +6,12 @@ import {
 } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 
-// Regenerate at most once per hour; cached responses avoid MySQL on every crawl.
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
+
+const SITEMAP_CACHE_MS = 60 * 60 * 1000;
+
+/** @type {{ data: unknown[], builtAt: number } | null} */
+let sitemapMemoryCache = null;
 
 function staticEntries() {
   return [
@@ -29,58 +33,77 @@ function staticEntries() {
   }));
 }
 
-function isProductionBuild() {
-  return (
-    process.env.NEXT_PHASE === "phase-production-build" ||
-    process.env.SKIP_DB_BUILD === "1"
-  );
+/** Only during `next build` (e.g. CI without MySQL). `SKIP_DB_BUILD` alone does not skip at runtime. */
+function isBuildPhase() {
+  return process.env.NEXT_PHASE === "phase-production-build";
+}
+
+function getCachedSitemap({ allowStale = false } = {}) {
+  if (!sitemapMemoryCache?.data?.length) return null;
+  const age = Date.now() - sitemapMemoryCache.builtAt;
+  if (age <= SITEMAP_CACHE_MS || allowStale) {
+    return sitemapMemoryCache.data;
+  }
+  return null;
+}
+
+function setCachedSitemap(data) {
+  sitemapMemoryCache = { data, builtAt: Date.now() };
+}
+
+async function buildSitemapFromDatabase() {
+  const entries = staticEntries();
+  const [services, projects, { posts }, locations] = await Promise.all([
+    getActiveServices(),
+    getPublishedPortfolio(),
+    getPublishedPosts({ take: 200 }),
+    getActiveLocations(),
+  ]);
+
+  return [
+    ...entries,
+    ...locations.map((item) => ({
+      url: siteUrl(`/${item.slug}`),
+      lastModified: new Date(item.updatedAt),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    })),
+    ...services.map((item) => ({
+      url: siteUrl(`/services/${item.slug}`),
+      lastModified: new Date(item.updatedAt),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    })),
+    ...projects.map((item) => ({
+      url: siteUrl(`/portfolio/${item.slug}`),
+      lastModified: new Date(item.updatedAt),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    })),
+    ...posts.map((item) => ({
+      url: siteUrl(`/blog/${item.slug}`),
+      lastModified: new Date(item.updatedAt),
+      changeFrequency: "weekly",
+      priority: 0.6,
+    })),
+  ];
 }
 
 export default async function sitemap() {
-  const entries = staticEntries();
+  const staticOnly = staticEntries();
 
-  // GitHub Actions has no MySQL. Skip CMS URLs at build; on server, use DB when
-  // available (cached via revalidate) or static entries on failure.
-  if (isProductionBuild()) {
-    return entries;
+  if (isBuildPhase()) {
+    return staticOnly;
   }
 
-  try {
-    const [services, projects, { posts }, locations] = await Promise.all([
-      getActiveServices(),
-      getPublishedPortfolio(),
-      getPublishedPosts({ take: 200 }),
-      getActiveLocations(),
-    ]);
+  const fresh = getCachedSitemap();
+  if (fresh) return fresh;
 
-    return [
-      ...entries,
-      ...locations.map((item) => ({
-        url: siteUrl(`/${item.slug}`),
-        lastModified: new Date(item.updatedAt),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      })),
-      ...services.map((item) => ({
-        url: siteUrl(`/services/${item.slug}`),
-        lastModified: new Date(item.updatedAt),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      })),
-      ...projects.map((item) => ({
-        url: siteUrl(`/portfolio/${item.slug}`),
-        lastModified: new Date(item.updatedAt),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      })),
-      ...posts.map((item) => ({
-        url: siteUrl(`/blog/${item.slug}`),
-        lastModified: new Date(item.updatedAt),
-        changeFrequency: "weekly",
-        priority: 0.6,
-      })),
-    ];
+  try {
+    const full = await buildSitemapFromDatabase();
+    setCachedSitemap(full);
+    return full;
   } catch {
-    return entries;
+    return getCachedSitemap({ allowStale: true }) ?? staticOnly;
   }
 }
