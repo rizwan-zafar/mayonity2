@@ -6,7 +6,8 @@ import {
 } from "@/lib/data";
 import { siteUrl } from "@/lib/utils";
 
-export const dynamic = "force-dynamic";
+// Regenerate at most once per hour; cached responses avoid MySQL on every crawl.
+export const revalidate = 3600;
 
 function staticEntries() {
   return [
@@ -38,8 +39,8 @@ function isProductionBuild() {
 export default async function sitemap() {
   const entries = staticEntries();
 
-  // GitHub Actions has no MySQL. Skip CMS URLs at build; serve the full
-  // sitemap at request time on cPanel.
+  // GitHub Actions has no MySQL. Skip CMS URLs at build; on server, use DB when
+  // available (cached via revalidate) or static entries on failure.
   if (isProductionBuild()) {
     return entries;
   }
