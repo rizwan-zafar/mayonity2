@@ -44,26 +44,28 @@ function revalidatePublic() {
 }
 
 export async function loginAction(prev, formData) {
+  const email = String(formData.get("email") || "").trim();
   const parsed = loginSchema.safeParse({
-    email: String(formData.get("email") || ""),
+    email,
     password: String(formData.get("password") || ""),
   });
+
   if (!parsed.success) {
-    return { error: "Enter a valid email and password." };
+    return { error: "Enter a valid email and password.", email };
   }
 
   const headerList = await headers();
   const limited = rateLimit(`login:${getClientIp(headerList)}`, 8, 15 * 60 * 1000);
   if (!limited.ok) {
-    return { error: "Too many attempts. Wait and try again." };
+    return { error: "Too many attempts. Wait and try again.", email: parsed.data.email };
   }
 
   const user = await prisma.user.findUnique({ where: { email: parsed.data.email } });
   if (!user || user.role !== "admin") {
-    return { error: "Invalid credentials." };
+    return { error: "Invalid credentials.", email: parsed.data.email };
   }
   const ok = await bcrypt.compare(parsed.data.password, user.password);
-  if (!ok) return { error: "Invalid credentials." };
+  if (!ok) return { error: "Invalid credentials.", email: parsed.data.email };
 
   const token = await createSessionToken(user);
   await setSessionCookie(token);
