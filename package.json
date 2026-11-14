@@ -11,6 +11,7 @@
     "db:seed": "node prisma/seed.js",
     "db:studio": "prisma studio",
     "cpanel:pack": "bash scripts/cpanel-pack.sh",
+    "test:smtp": "node --env-file=.env scripts/test-smtp.mjs",
     "postinstall": "prisma generate"
   },
   "prisma": {

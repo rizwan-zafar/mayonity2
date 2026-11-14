@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { contactSchema, newsletterSchema } from "@/lib/validation";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { sendContactNotificationEmails } from "@/lib/contact-emails";
+import { getSettings } from "@/lib/data";
+import { resolveAdminNotifyEmail, resolvePublicContactEmail } from "@/lib/notify-email";
 
 export async function submitContact(prev, formData) {
   const payload = {
@@ -22,20 +24,30 @@ export async function submitContact(prev, formData) {
     return { ok: true };
   }
 
+  const values = {
+    name: payload.name,
+    email: payload.email,
+    phone: payload.phone,
+    company: payload.company,
+    service: payload.service,
+    budget: payload.budget,
+    message: payload.message,
+  };
+
   const parsed = contactSchema.safeParse(payload);
   if (!parsed.success) {
     const fieldErrors = {};
     for (const issue of parsed.error.issues) {
       fieldErrors[issue.path[0]] = issue.message;
     }
-    return { ok: false, error: "Please check the form.", fieldErrors };
+    return { ok: false, error: "Please check the form.", fieldErrors, values };
   }
 
   const headerList = await headers();
   const ip = getClientIp(headerList);
   const limited = rateLimit(`contact:${ip}`, 6, 60 * 60 * 1000);
   if (!limited.ok) {
-    return { ok: false, error: "Too many messages. Please try again later." };
+    return { ok: false, error: "Too many messages. Please try again later.", values };
   }
 
   await prisma.contactMessage.create({
@@ -51,7 +63,12 @@ export async function submitContact(prev, formData) {
   });
 
   try {
-    await sendContactNotificationEmails(parsed.data);
+    const settings = await getSettings();
+    const notifyEmail = resolveAdminNotifyEmail(settings);
+    await sendContactNotificationEmails(parsed.data, {
+      notifyEmail,
+      contactEmail: resolvePublicContactEmail(settings),
+    });
   } catch (error) {
     console.error("Contact notification emails failed:", error);
   }

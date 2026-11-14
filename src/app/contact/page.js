@@ -26,7 +26,7 @@ export default async function ContactPage() {
         copy="Share the brief, the constraint, or the half-formed thought. We will help you turn it into a product."
       />
       <section className="mx-auto grid max-w-7xl gap-10 px-5 pb-24 lg:grid-cols-[1fr_0.8fr] md:px-8">
-        <ContactForm services={services} />
+        <ContactForm services={services} contactEmail={settings.email?.trim() || "hello@mayonity.com"} />
         <aside className="space-y-6">
           <div className="glass rounded-[1.5rem] p-6">
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-muted">Direct</p>
