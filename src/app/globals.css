@@ -146,6 +146,33 @@ a {
   border-radius: 1rem;
 }
 
+.prose-mayonity .table-scroll {
+  margin: 1.5rem 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.prose-mayonity table {
+  width: 100%;
+  min-width: 28rem;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.prose-mayonity th,
+.prose-mayonity td {
+  padding: 0.65rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.prose-mayonity th {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .marquee {
   display: flex;
   gap: 3rem;

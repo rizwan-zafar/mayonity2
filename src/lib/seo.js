@@ -50,6 +50,24 @@ export function breadcrumbJsonLd(items) {
 }
 
 export function articleJsonLd(post, settings) {
+  const team = post.teamMember;
+  const author = team
+    ? {
+        "@type": "Person",
+        name: team.name,
+        jobTitle: team.position,
+        url: siteUrl("/team"),
+        ...(team.photo
+          ? {
+              image: team.photo.startsWith("http") ? team.photo : siteUrl(team.photo),
+            }
+          : {}),
+      }
+    : {
+        "@type": "Person",
+        name: post.author?.name || settings.siteName || "Mayonity",
+      };
+
   return {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -60,10 +78,7 @@ export function articleJsonLd(post, settings) {
       : siteUrl(post.featuredImage),
     datePublished: post.publishedAt,
     dateModified: post.updatedAt,
-    author: {
-      "@type": "Person",
-      name: post.author?.name || settings.siteName || "Mayonity",
-    },
+    author,
     publisher: {
       "@type": "Organization",
       name: settings.siteName || "Mayonity",

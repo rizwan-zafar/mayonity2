@@ -88,29 +88,45 @@ ALTER TABLE `Portfolio`
 -- CHECK (optional):
 -- SHOW TABLES LIKE 'Location';
 
-CREATE TABLE `Location` (
-  `id` INTEGER NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(191) NOT NULL,
-  `slug` VARCHAR(191) NOT NULL,
-  `status` VARCHAR(191) NOT NULL DEFAULT 'draft',
-  `sortOrder` INTEGER NOT NULL DEFAULT 0,
-  `seoTitle` VARCHAR(191) NULL,
-  `metaDescription` TEXT NULL,
-  `eyebrow` VARCHAR(191) NULL,
-  `h1` VARCHAR(191) NOT NULL,
-  `intro` TEXT NOT NULL,
-  `whyTitle` VARCHAR(191) NULL,
-  `whyBody` TEXT NOT NULL,
-  `processTitle` VARCHAR(191) NULL,
-  `processBody` TEXT NOT NULL,
-  `industries` TEXT NOT NULL,
-  `cities` TEXT NOT NULL,
-  `faqs` TEXT NOT NULL,
-  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-  `updatedAt` DATETIME(3) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE INDEX `Location_slug_key`(`slug`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- CREATE TABLE `Location` (
+--   `id` INTEGER NOT NULL AUTO_INCREMENT,
+--   `name` VARCHAR(191) NOT NULL,
+--   `slug` VARCHAR(191) NOT NULL,
+--   `status` VARCHAR(191) NOT NULL DEFAULT 'draft',
+--   `sortOrder` INTEGER NOT NULL DEFAULT 0,
+--   `seoTitle` VARCHAR(191) NULL,
+--   `metaDescription` TEXT NULL,
+--   `eyebrow` VARCHAR(191) NULL,
+--   `h1` VARCHAR(191) NOT NULL,
+--   `intro` TEXT NOT NULL,
+--   `whyTitle` VARCHAR(191) NULL,
+--   `whyBody` TEXT NOT NULL,
+--   `processTitle` VARCHAR(191) NULL,
+--   `processBody` TEXT NOT NULL,
+--   `industries` TEXT NOT NULL,
+--   `cities` TEXT NOT NULL,
+--   `faqs` TEXT NOT NULL,
+--   `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+--   `updatedAt` DATETIME(3) NOT NULL,
+--   PRIMARY KEY (`id`),
+--   UNIQUE INDEX `Location_slug_key`(`slug`)
+-- ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+
+-- -----------------------------------------------------------------------------
+-- 6) REQUIRED — Blog post team author (run once)
+--    Status: [ ] not run
+-- -----------------------------------------------------------------------------
+
+-- CHECK (optional):
+-- SHOW COLUMNS FROM `BlogPost` LIKE 'teamMemberId';
+
+-- ALTER TABLE `BlogPost`
+--   ADD COLUMN `teamMemberId` INTEGER NULL AFTER `authorId`,
+--   ADD INDEX `BlogPost_teamMemberId_idx`(`teamMemberId`),
+--   ADD CONSTRAINT `BlogPost_teamMemberId_fkey`
+--     FOREIGN KEY (`teamMemberId`) REFERENCES `TeamMember`(`id`)
+--     ON DELETE SET NULL ON UPDATE CASCADE;
 
 
 -- -----------------------------------------------------------------------------

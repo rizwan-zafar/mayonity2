@@ -13,9 +13,14 @@ export default async function PostFormPage({ params }) {
     where: { id: Number(id) },
     include: { tags: true },
   });
-  const [categories, tags] = await Promise.all([
+  const [categories, tags, team] = await Promise.all([
     prisma.blogCategory.findMany({ orderBy: { name: "asc" } }),
     prisma.blogTag.findMany({ orderBy: { name: "asc" } }),
+    prisma.teamMember.findMany({
+      where: { status: "active" },
+      orderBy: { sortOrder: "asc" },
+      select: { id: true, name: true, position: true },
+    }),
   ]);
   const selected = new Set((item?.tags || []).map((row) => row.tagId));
 
@@ -35,6 +40,21 @@ export default async function PostFormPage({ params }) {
         <select name="categoryId" defaultValue={item?.categoryId || categories[0]?.id} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2">
           {categories.map((category) => (
             <option key={category.id} value={category.id}>{category.name}</option>
+          ))}
+        </select>
+      </label>
+      <label className="grid gap-1 text-sm">
+        Author (team member)
+        <select
+          name="teamMemberId"
+          defaultValue={item?.teamMemberId ?? ""}
+          className="rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+        >
+          <option value="">No author</option>
+          {team.map((member) => (
+            <option key={member.id} value={member.id}>
+              {member.name} — {member.position}
+            </option>
           ))}
         </select>
       </label>

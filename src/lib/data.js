@@ -230,6 +230,7 @@ export const getPostBySlug = cache(async (slug) => {
     where: { slug, published: true },
     include: {
       author: { select: { name: true, email: true } },
+      teamMember: { select: { name: true, position: true, photo: true } },
       category: true,
       tags: { include: { tag: true } },
     },

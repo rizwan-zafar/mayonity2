@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getPostBySlug, getRelatedPosts, getSettings } from "@/lib/data";
-import { extractHeadings, renderMarkdown } from "@/lib/markdown";
+import { extractFaqFromMarkdown, extractHeadings, renderMarkdown } from "@/lib/markdown";
 import { formatDate, siteUrl } from "@/lib/utils";
-import { JsonLd, articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqPageJsonLd } from "@/lib/seo";
 import { shareImagesMeta } from "@/lib/seo-meta";
 import { incrementBlogPostViews } from "@/lib/blog-views";
 
@@ -40,6 +40,7 @@ export default async function BlogDetailPage({ params }) {
   const [related, settings] = await Promise.all([getRelatedPosts(post), getSettings()]);
   const html = renderMarkdown(post.content);
   const toc = extractHeadings(post.content);
+  const faqs = extractFaqFromMarkdown(post.content);
   await incrementBlogPostViews(post.id).catch(() => {});
 
   const share = siteUrl(`/blog/${post.slug}`);
@@ -54,6 +55,7 @@ export default async function BlogDetailPage({ params }) {
         ])}
       />
       <JsonLd data={articleJsonLd(post, settings)} />
+      {faqs.length ? <JsonLd data={faqPageJsonLd(faqs)} /> : null}
       <article className="px-5 pb-20 pt-32 md:px-8 md:pt-40">
         <div className="mx-auto max-w-7xl">
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-cyan">
@@ -61,7 +63,25 @@ export default async function BlogDetailPage({ params }) {
           </p>
           <h1 className="display mt-4 max-w-4xl text-[clamp(2.4rem,6vw,5.2rem)]">{post.title}</h1>
           <p className="mt-5 max-w-2xl body-copy">{post.excerpt}</p>
-          <p className="mt-4 text-sm text-muted">By {post.author?.name}</p>
+          {post.teamMember ? (
+            <Link
+              href="/team"
+              className="mt-6 flex max-w-md items-center gap-4 rounded-[1.3rem] border border-white/10 bg-white/[0.03] p-4 transition hover:border-white/20"
+            >
+              <img
+                src={post.teamMember.photo}
+                alt={post.teamMember.name}
+                className="h-14 w-14 shrink-0 rounded-full border border-white/10 object-cover"
+              />
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.18em] text-muted">Written by</p>
+                <p className="display mt-1 text-xl text-[var(--text)]">{post.teamMember.name}</p>
+                <p className="mt-0.5 text-sm text-cyan">{post.teamMember.position}</p>
+              </div>
+            </Link>
+          ) : (
+            <p className="mt-4 text-sm text-muted">By {post.author?.name}</p>
+          )}
           <img src={post.featuredImage} alt={post.title} className="mt-10 w-full rounded-[1.8rem] border border-white/10 object-cover" />
         </div>
         <div className="mx-auto mt-12 grid max-w-7xl gap-10 lg:grid-cols-[0.7fr_1.5fr]">
