@@ -12,7 +12,7 @@ import {
   setSessionCookie,
 } from "@/lib/auth";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
-import { slugify } from "@/lib/utils";
+import { readingTimeFrom, slugify } from "@/lib/utils";
 import { isReservedLocationSlug } from "@/lib/locations";
 import { revalidatePath } from "next/cache";
 
@@ -309,7 +309,7 @@ export async function savePost(formData) {
     publishedAt: formData.get("publishedAt")
       ? new Date(String(formData.get("publishedAt")))
       : new Date(),
-    readingTime: Number(formData.get("readingTime") || 5),
+    readingTime: readingTimeFrom(String(formData.get("content") || "")),
     categoryId: Number(formData.get("categoryId")),
     authorId: Number(session.sub),
     teamMemberId: (() => {
