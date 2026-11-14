@@ -48,6 +48,21 @@ export function readingTimeFrom(content) {
   return Math.max(1, Math.round(words / 200));
 }
 
+/** Remove a trailing "| Mayonity" / "· Mayonity" style suffix so layout templates don't double the brand. */
+export function stripTrailingBrand(title, brand = "Mayonity") {
+  const t = String(title || "").trim();
+  if (!t) return t;
+  const escaped = brand.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`\\s*[|·—–\\-]\\s*${escaped}\\s*$`, "i");
+  return t.replace(re, "").trim() || t;
+}
+
+/** Next metadata title with exactly one brand suffix (bypasses root layout template). */
+export function documentTitle(title, brand = "Mayonity") {
+  const head = stripTrailingBrand(title, brand);
+  return { absolute: `${head} · ${brand}` };
+}
+
 export function splitParagraphs(text) {
   if (!text) return [];
   return String(text)

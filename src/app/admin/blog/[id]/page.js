@@ -59,7 +59,6 @@ export default async function PostFormPage({ params }) {
         </select>
       </label>
       <TagPicker tags={tags} selected={[...selected]} />
-      <Field label="Reading time" name="readingTime" type="number" defaultValue={item?.readingTime ?? 5} />
       <label className="text-sm"><input type="checkbox" name="published" defaultChecked={item?.published} /> Published</label>
       <label className="text-sm"><input type="checkbox" name="featured" defaultChecked={item?.featured} /> Featured</label>
       <label className="text-sm"><input type="checkbox" name="popular" defaultChecked={item?.popular} /> Popular</label>
