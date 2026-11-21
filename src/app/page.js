@@ -70,7 +70,7 @@ export default async function HomePage() {
     <>
       <Hero />
       <PortfolioHeroStrip projects={data.portfolio} />
-      <HomeSocialProof stats={data.stats} clients={data.clients} />
+      <HomeSocialProof stats={data.stats} />
       <Intro />
       <ServicesShowcase services={data.services} />
       <PortfolioPreview projects={data.portfolio} />

@@ -47,7 +47,7 @@ function Counter({ value, suffix }) {
 export function StatsBand({ stats, compact = false }) {
   if (!stats?.length) return null;
   return (
-    <section className={compact ? "px-5 pt-8 pb-4 md:px-8" : "px-5 py-20 md:px-8"}>
+    <section className={compact ? "px-5 py-6 md:px-8" : "px-5 py-20 md:px-8"}>
       <div
         className={
           compact

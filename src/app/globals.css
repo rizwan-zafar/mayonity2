@@ -173,26 +173,6 @@ a {
   font-weight: 600;
 }
 
-.marquee {
-  display: flex;
-  gap: 3rem;
-  width: max-content;
-  animation: marquee 42s linear infinite;
-}
-
-.marquee:hover {
-  animation-play-state: paused;
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 @keyframes pulse-line {
   0% {
     transform: scaleX(0.2);
@@ -218,7 +198,6 @@ a {
     scroll-behavior: auto;
   }
 
-  .marquee,
   .scan-line {
     animation: none;
   }
