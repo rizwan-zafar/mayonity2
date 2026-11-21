@@ -125,7 +125,6 @@ export async function getHomeData() {
     stats,
     portfolio,
     testimonials,
-    clients,
     team,
     technologies,
     process,
@@ -141,7 +140,6 @@ export async function getHomeData() {
       take: 6,
     }),
     getActiveTestimonials(),
-    getActiveClients(),
     prisma.teamMember.findMany({
       where: { status: "active" },
       orderBy: { sortOrder: "asc" },
@@ -159,7 +157,6 @@ export async function getHomeData() {
     stats,
     portfolio,
     testimonials,
-    clients,
     team,
     technologies,
     process,
