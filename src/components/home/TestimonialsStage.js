@@ -9,7 +9,7 @@ export function TestimonialsStage({ testimonials }) {
   const item = testimonials[index];
 
   return (
-    <section className="px-5 py-24 md:px-8">
+    <section className="px-5 py-14 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
         <SectionHeading eyebrow="Client signal" title="People we have built with." />
         <div className="mt-12 grid gap-8 overflow-hidden rounded-[2rem] border border-white/10 p-6 md:grid-cols-[0.8fr_1.2fr] md:p-10">

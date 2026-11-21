@@ -9,7 +9,7 @@ export function TechStack({ technologies }) {
   }, {});
 
   return (
-    <section className="px-5 py-24 md:px-8">
+    <section className="px-5 py-14 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Stack"

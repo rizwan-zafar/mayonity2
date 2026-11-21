@@ -1,9 +1,9 @@
-export function ClientsMarquee({ clients }) {
+export function ClientsMarquee({ clients, compact = false }) {
   if (!clients?.length) return null;
   const row = [...clients, ...clients];
   return (
-    <section className="py-16">
-      <p className="mb-8 text-center font-mono text-xs uppercase tracking-[0.28em] text-muted">
+    <section className={compact ? "pb-8 pt-2" : "py-16"}>
+      <p className={`${compact ? "mb-4" : "mb-8"} text-center font-mono text-xs uppercase tracking-[0.28em] text-muted`}>
         Trusted by businesses building the future.
       </p>
       <div className="overflow-hidden border-y border-white/10 py-8">
