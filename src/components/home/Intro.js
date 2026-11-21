@@ -22,7 +22,7 @@ const approach = [
 
 export function Intro() {
   return (
-    <section className="px-5 py-28 md:px-8">
+    <section className="px-5 py-14 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
         <Reveal>
           <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">What we solve</p>
@@ -40,7 +40,7 @@ export function Intro() {
             </Reveal>
           ))}
         </div>
-        <div className="mt-20">
+        <div className="mt-14">
           <Reveal>
             <p className="font-mono text-xs uppercase tracking-[0.28em] text-cyan">How we work</p>
             <h2 className="display mt-4 text-4xl md:text-5xl">Built around the problem, not a template</h2>

@@ -1,10 +1,10 @@
 import { Hero } from "@/components/home/Hero";
+import { HomeSocialProof } from "@/components/home/HomeSocialProof";
+import { PortfolioHeroStrip } from "@/components/home/PortfolioHeroStrip";
 import { Intro } from "@/components/home/Intro";
 import { ServicesShowcase } from "@/components/home/ServicesShowcase";
-import { StatsBand } from "@/components/home/StatsBand";
 import { PortfolioPreview } from "@/components/home/PortfolioPreview";
 import { TestimonialsStage } from "@/components/home/TestimonialsStage";
-import { ClientsMarquee } from "@/components/home/ClientsMarquee";
 import { TeamPreview } from "@/components/home/TeamPreview";
 import { ProcessTimeline } from "@/components/home/ProcessTimeline";
 import { TechStack } from "@/components/home/TechStack";
@@ -69,12 +69,12 @@ export default async function HomePage() {
   return (
     <>
       <Hero />
+      <PortfolioHeroStrip projects={data.portfolio} />
+      <HomeSocialProof stats={data.stats} clients={data.clients} />
       <Intro />
       <ServicesShowcase services={data.services} />
-      <StatsBand stats={data.stats} />
       <PortfolioPreview projects={data.portfolio} />
       <TestimonialsStage testimonials={data.testimonials} />
-      <ClientsMarquee clients={data.clients} />
       <TeamPreview team={data.team} />
       <ProcessTimeline steps={HOME_PROCESS} />
       <TechStack technologies={data.technologies} />

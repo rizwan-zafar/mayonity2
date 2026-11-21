@@ -15,7 +15,7 @@ export function ServicesShowcaseLayout({ services, children }) {
 
   return (
     <div
-      className="mt-14 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"
+      className="mt-10 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]"
       onMouseOver={(event) => {
         const target = event.target.closest("[data-service-slug]");
         if (!target) return;

@@ -1,48 +1,23 @@
 import Link from "next/link";
 import { Reveal, SectionHeading } from "@/components/ui/Section";
 
-const SERVICE_PROOF = [
-  {
-    test: /web/i,
-    href: "/services/web-development",
-    label: "See how we approach custom web applications.",
-  },
-  {
-    test: /e-?commerce/i,
-    href: "/services/ecommerce",
-    label: "Explore our ecommerce work.",
-  },
-  {
-    test: /mobile/i,
-    href: "/services/app-development",
-    label: "See our mobile product experience.",
-  },
-  {
-    test: /wordpress/i,
-    href: "/services/wordpress-solutions",
-    label: "Explore our WordPress work.",
-  },
-];
-
 export function PortfolioPreview({ projects }) {
   if (!projects?.length) return null;
-  const categories = projects.map((project) => project.category || "").join(" ");
-  const proofLinks = SERVICE_PROOF.filter((item) => item.test.test(categories));
 
   return (
-    <section className="px-5 py-24 md:px-8">
+    <section className="px-5 py-14 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading
             eyebrow="Selected work"
             title="A Look at What We've Built"
-            copy="Published projects from the Mayonity portfolio. Categories and descriptions come from the project records."
+            copy="A selection of products and platforms we have designed and shipped for clients across web, commerce, and mobile."
           />
           <Link href="/portfolio" className="text-sm text-accent">
             View Our Work
           </Link>
         </div>
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
+        <div className="mt-8 grid gap-5 md:grid-cols-2">
           {projects.map((project, index) => (
             <Reveal key={project.slug} delay={index * 0.04} className={index === 0 ? "md:col-span-2" : ""}>
               <Link href={`/portfolio/${project.slug}`} className="group block overflow-hidden rounded-[1.75rem] border border-white/10">
@@ -63,15 +38,6 @@ export function PortfolioPreview({ projects }) {
             </Reveal>
           ))}
         </div>
-        {proofLinks.length ? (
-          <div className="mt-10 flex flex-col gap-3 text-sm text-muted md:flex-row md:flex-wrap md:gap-x-8">
-            {proofLinks.map((item) => (
-              <Link key={item.href} href={item.href} className="text-white hover:text-accent">
-                {item.label}
-              </Link>
-            ))}
-          </div>
-        ) : null}
       </div>
     </section>
   );
