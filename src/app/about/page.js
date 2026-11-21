@@ -9,12 +9,21 @@ export const metadata = {
 };
 
 const timeline = [
-  { year: "2014", title: "Founded", copy: "A studio formed around a simple belief: software should feel considered." },
-  { year: "2016", title: "Product teams", copy: "We moved from sites into platforms — systems that companies run on." },
-  { year: "2018", title: "Mobile practice", copy: "Native-feeling apps for teams whose work does not happen at a desk." },
-  { year: "2020", title: "Commerce at scale", copy: "Storefronts that carry brand all the way through checkout." },
-  { year: "2022", title: "Intelligence in the workflow", copy: "AI used as a collaborator inside products, not as theatre." },
-  { year: "2026", title: "What comes next", copy: "A global, future-ready partner for companies building the next decade." },
+  {
+    year: "2022",
+    title: "Founded",
+    copy: "A small design and development team starts in Lahore, building websites and web apps for startups and small businesses.",
+  },
+  {
+    year: "Today",
+    title: "Web, mobile and online stores",
+    copy: "Websites, web apps, mobile apps and online stores built by one remote team, for clients in Singapore, Malaysia and Australia.",
+  },
+  {
+    year: "",
+    title: "Practical AI",
+    copy: "We add useful AI features, such as chat assistants and workflow automation, to products where they fit.",
+  },
 ];
 
 const reasons = [
