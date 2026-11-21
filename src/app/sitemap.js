@@ -8,7 +8,7 @@ import { siteUrl } from "@/lib/utils";
 
 export const dynamic = "force-dynamic";
 
-const SITEMAP_CACHE_MS = 60 * 60 * 1000;
+const SITEMAP_CACHE_MS = 15 * 60 * 1000;
 
 /** @type {{ data: unknown[], builtAt: number } | null} */
 let sitemapMemoryCache = null;
@@ -60,7 +60,10 @@ async function buildSitemapFromDatabase() {
     getActiveLocations(),
   ]);
 
-  return [
+  const hasDbUrls =
+    services.length > 0 || projects.length > 0 || posts.length > 0 || locations.length > 0;
+
+  const urls = [
     ...entries,
     ...locations.map((item) => ({
       url: siteUrl(`/${item.slug}`),
@@ -87,6 +90,8 @@ async function buildSitemapFromDatabase() {
       priority: 0.6,
     })),
   ];
+
+  return { urls, hasDbUrls };
 }
 
 export default async function sitemap() {
@@ -100,9 +105,11 @@ export default async function sitemap() {
   if (fresh) return fresh;
 
   try {
-    const full = await buildSitemapFromDatabase();
-    setCachedSitemap(full);
-    return full;
+    const { urls, hasDbUrls } = await buildSitemapFromDatabase();
+    if (hasDbUrls) {
+      setCachedSitemap(urls);
+    }
+    return urls;
   } catch {
     return getCachedSitemap({ allowStale: true }) ?? staticOnly;
   }
