@@ -44,12 +44,18 @@ function Counter({ value, suffix }) {
   );
 }
 
-export function StatsBand({ stats }) {
+export function StatsBand({ stats, compact = false }) {
   if (!stats?.length) return null;
   return (
-    <section className="px-5 py-20 md:px-8">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 px-6 py-12 md:px-10">
-        <div className="mb-8 h-px w-full overflow-hidden bg-white/10">
+    <section className={compact ? "px-5 pt-8 pb-4 md:px-8" : "px-5 py-20 md:px-8"}>
+      <div
+        className={
+          compact
+            ? "mx-auto max-w-7xl overflow-hidden rounded-[1.5rem] border border-white/10 px-5 py-8 md:px-8"
+            : "mx-auto max-w-7xl overflow-hidden rounded-[2rem] border border-white/10 px-6 py-12 md:px-10"
+        }
+      >
+        <div className={`${compact ? "mb-5" : "mb-8"} h-px w-full overflow-hidden bg-white/10`}>
           <div className="scan-line h-px w-full bg-gradient-to-r from-accent via-violet to-cyan" />
         </div>
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">

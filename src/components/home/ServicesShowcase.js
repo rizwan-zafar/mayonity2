@@ -8,7 +8,7 @@ export function ServicesShowcase({ services }) {
   if (!ordered.length) return null;
 
   return (
-    <section className="px-5 py-24 md:px-8" id="services">
+    <section className="px-5 py-14 md:px-8 md:py-16" id="services">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Capabilities"
@@ -16,9 +16,9 @@ export function ServicesShowcase({ services }) {
           copy="Start with the product you need. Each service page explains the approach in more detail."
         />
         <ServicesShowcaseLayout services={ordered}>
-          <div>
+          <div className="divide-y divide-white/10 border-y border-white/10">
             {primary.length ? (
-              <p className="mb-2 font-mono text-xs uppercase tracking-[0.22em] text-cyan">
+              <p className="py-3 font-mono text-xs uppercase tracking-[0.22em] text-cyan">
                 Primary services
               </p>
             ) : null}
@@ -26,7 +26,7 @@ export function ServicesShowcase({ services }) {
               <ServiceRowLink key={service.slug} service={service} prominent />
             ))}
             {secondary.length ? (
-              <p className="mb-2 mt-10 font-mono text-xs uppercase tracking-[0.22em] text-muted">
+              <p className="py-3 pt-6 font-mono text-xs uppercase tracking-[0.22em] text-muted">
                 Design & other services
               </p>
             ) : null}
@@ -45,17 +45,15 @@ function ServiceRowLink({ service, prominent }) {
     <Link
       href={`/services/${service.slug}`}
       data-service-slug={service.slug}
-      className="group block w-full border-b border-white/10 py-5 text-left transition hover:pl-3"
+      className="group grid grid-cols-[2.75rem_1fr] gap-x-4 gap-y-2 py-5 text-left transition hover:bg-white/[0.03] hover:pl-2"
     >
-      <div className="flex items-end justify-between gap-4">
-        <span className="font-mono text-xs text-muted">{service.number}</span>
-        <span
-          className={`display ${prominent ? "text-2xl md:text-4xl" : "text-xl md:text-3xl"} text-white/80 group-hover:text-white`}
-        >
-          {displayName(service)}
-        </span>
-      </div>
-      <p className="mt-2 max-w-xl text-sm text-muted">{displayShort(service)}</p>
+      <span className="pt-1 font-mono text-xs text-muted">{service.number}</span>
+      <span
+        className={`display ${prominent ? "text-2xl md:text-3xl" : "text-xl md:text-2xl"} text-white/80 group-hover:text-white`}
+      >
+        {displayName(service)}
+      </span>
+      <p className="col-span-2 max-w-xl text-sm text-muted">{displayShort(service)}</p>
     </Link>
   );
 }

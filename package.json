@@ -12,7 +12,8 @@
     "db:studio": "prisma studio",
     "cpanel:pack": "bash scripts/cpanel-pack.sh",
     "test:smtp": "node --env-file=.env scripts/test-smtp.mjs",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "prepare": "husky"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -37,6 +38,7 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.3.3",
+    "husky": "^9.1.7",
     "prisma": "^6.19.3",
     "tailwindcss": "^4"
   }

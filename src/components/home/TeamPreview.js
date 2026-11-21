@@ -5,7 +5,7 @@ import { Reveal, SectionHeading } from "@/components/ui/Section";
 export function TeamPreview({ team }) {
   if (!team?.length) return null;
   return (
-    <section className="px-5 py-24 md:px-8">
+    <section className="px-5 py-14 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="People"
