@@ -199,7 +199,7 @@ export default async function LocationPage({ params }) {
       ) : null}
 
       <CtaBand
-        title={`Ready to build in ${location.name}?`}
+        title="Ready to start your project?"
         copy="Tell us what you're building and we'll help you shape the right product and technical approach."
         ctaLabel="Start a Project"
       />
