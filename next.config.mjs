@@ -18,6 +18,12 @@ const nextConfig = {
   async redirects() {
     return [
       {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.mayonity.com" }],
+        destination: "https://mayonity.com/:path*",
+        permanent: true,
+      },
+      {
         source: "/services/suggestions-solutions",
         destination: "/services/it-consulting",
         statusCode: 301,
