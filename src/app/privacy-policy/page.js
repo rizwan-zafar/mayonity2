@@ -20,7 +20,7 @@ export default async function PrivacyPage() {
         </p>
         <h2>What we collect</h2>
         <p>
-          Contact forms collect your name, email, phone, company, service interest, budget and message. Newsletter signup collects your email. Admin authentication uses a secure session cookie.
+          Contact forms collect your name, email, phone, company, service interest, budget and message. Newsletter signup collects your email. Admin authentication uses a secure session cookie. We also collect basic usage data about how people use the site, such as pages visited, clicks, scrolling and device type, using Microsoft Clarity.
         </p>
         <h2>How we use it</h2>
         <p>
@@ -28,7 +28,7 @@ export default async function PrivacyPage() {
         </p>
         <h2>Cookies</h2>
         <p>
-          Essential cookies are used to keep administrators signed in. We do not run advertising trackers on the public site.
+          Essential cookies keep administrators signed in. We also use Microsoft Clarity to see how visitors use our site, so we can fix confusing pages. Clarity sets cookies and records anonymous sessions, including mouse movement and clicks. Form fields and text you type are masked and are not recorded. We do not run advertising trackers. You can block cookies in your browser settings. You can read how Microsoft handles this data at https://privacy.microsoft.com/privacystatement
         </p>
         <h2>Retention</h2>
         <p>
