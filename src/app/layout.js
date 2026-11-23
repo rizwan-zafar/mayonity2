@@ -4,6 +4,7 @@ import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { SiteChrome } from "@/components/layout/SiteChrome";
 import { Ga4 } from "@/components/analytics/Ga4";
+import { ClarityScript } from "@/components/ClarityScript";
 import { JsonLd, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { buildOpenGraphImages } from "@/lib/seo-meta";
 import { getActiveLocations, getSettings, getSocialLinks, getActiveServices } from "@/lib/data";
@@ -86,6 +87,7 @@ export default async function RootLayout({ children }) {
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <Ga4 />
+        <ClarityScript />
         <JsonLd data={organizationJsonLd(settings, socials)} />
         <JsonLd data={websiteJsonLd(settings)} />
         <a
