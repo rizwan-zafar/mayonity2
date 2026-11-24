@@ -1,16 +1,42 @@
+import Image from "next/image";
 import Link from "next/link";
 
-export function Logo({ className = "" }) {
+const BRAND_VERSION = "4";
+
+/** @typedef {"compact" | "full"} LogoVariant */
+
+/**
+ * @param {{ className?: string; variant?: LogoVariant; priority?: boolean }} props
+ */
+export function Logo({ className = "", variant = "compact", priority = false }) {
+  if (variant === "compact") {
+    return (
+      <Link
+        href="/"
+        className={`group display text-[1.15rem] font-semibold tracking-[-0.02em] text-white transition hover:text-white/90 sm:text-xl ${className}`}
+      >
+        Mayonity
+      </Link>
+    );
+  }
+
+  const src = `/images/brand/mayonity-logo.png?v=${BRAND_VERSION}`;
+
   return (
-    <Link href="/" className={`group inline-flex items-center gap-3 ${className}`}>
-      <span className="relative grid h-9 w-9 place-items-center overflow-hidden rounded-xl border border-white/10 bg-white/5">
-        <span className="absolute inset-0 bg-gradient-to-br from-accent/50 via-violet/30 to-cyan/20 opacity-80 transition group-hover:opacity-100" />
-        <svg viewBox="0 0 32 32" className="relative h-5 w-5" aria-hidden="true">
-          <path d="M6 24L16 6L26 24H21L16 15L11 24H6Z" fill="white" />
-          <circle cx="16" cy="21" r="1.8" fill="#3ee0c8" />
-        </svg>
-      </span>
-      <span className="display text-[1.05rem] font-semibold tracking-[0.18em]">MAYONITY</span>
+    <Link
+      href="/"
+      className={`group inline-flex max-w-full items-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/40 ${className}`}
+    >
+      <Image
+        src={src}
+        alt="Mayonity Tech Solutions"
+        width={1024}
+        height={1024}
+        sizes="(max-width: 640px) 160px, 200px"
+        className="h-[5.5rem] w-auto max-w-[11rem] object-contain object-left transition group-hover:brightness-110 sm:h-28 sm:max-w-[13rem]"
+        priority={priority}
+        unoptimized
+      />
     </Link>
   );
 }

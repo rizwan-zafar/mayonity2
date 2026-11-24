@@ -12,7 +12,7 @@ export function Footer({ settings, socials, services, locations = [] }) {
       <div className="absolute inset-x-0 -top-px h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
       <div className={`mx-auto grid max-w-7xl gap-12 px-5 py-16 ${locationCols} md:px-8`}>
         <div>
-          <Logo />
+          <Logo variant="full" />
           <p className="mt-5 max-w-sm body-copy">
             Mayonity turns ideas into digital experiences, products and technology built for what comes next.
           </p>

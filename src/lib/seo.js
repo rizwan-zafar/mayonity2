@@ -6,7 +6,7 @@ export function organizationJsonLd(settings, socials = []) {
     "@type": "Organization",
     name: settings.siteName || "Mayonity",
     url: siteUrl(),
-    logo: siteUrl("/logo.svg"),
+    logo: siteUrl("/logo.png"),
     email: settings.email,
     telephone: settings.phone,
     address: settings.address
@@ -84,7 +84,7 @@ export function articleJsonLd(post, settings) {
       name: settings.siteName || "Mayonity",
       logo: {
         "@type": "ImageObject",
-        url: siteUrl("/logo.svg"),
+        url: siteUrl("/logo.png"),
       },
     },
     mainEntityOfPage: siteUrl(`/blog/${post.slug}`),
