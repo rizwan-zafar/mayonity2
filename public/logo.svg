@@ -1,9 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <rect width="64" height="64" rx="16" fill="#05060a"/>
-  <path d="M12 46L32 12L52 46H41.2L32 29.4L22.8 46H12Z" fill="url(#g)"/>
-  <circle cx="32" cy="40" r="4.5" fill="#3ee0c8"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none" role="img" aria-label="Mayonity">
+  <rect width="512" height="512" rx="64" fill="#05060a"/>
+  <path d="M112 368L256 112L400 368H325.6L256 234.4L186.4 368H112Z" fill="url(#m)"/>
+  <circle cx="256" cy="320" r="36" fill="#3ee0c8"/>
   <defs>
-    <linearGradient id="g" x1="12" y1="12" x2="52" y2="46" gradientUnits="userSpaceOnUse">
+    <linearGradient id="m" x1="112" y1="112" x2="400" y2="368" gradientUnits="userSpaceOnUse">
       <stop stop-color="#6ea8ff"/>
       <stop offset="1" stop-color="#8b7dff"/>
     </linearGradient>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/admin";
+import { Logo } from "@/components/layout/Logo";
 
 const links = [
   { href: "/admin", label: "Dashboards" },
@@ -24,7 +25,7 @@ export function AdminShell({ user, children }) {
     <div className="min-h-screen bg-[#07080d] text-white">
       <div className="grid lg:grid-cols-[240px_1fr]">
         <aside className="border-b border-white/10 p-5 lg:min-h-screen lg:border-b-0 lg:border-r">
-          <p className="display text-lg tracking-[0.16em]">MAYONITY</p>
+          <Logo variant="compact" />
           <p className="mt-1 text-xs text-muted">{user?.email}</p>
           <nav className="mt-6 grid gap-1 text-sm">
             {links.map((link) => (

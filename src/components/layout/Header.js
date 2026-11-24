@@ -41,7 +41,7 @@ export function Header({ services = [] }) {
       }`}
     >
       <div className="mx-auto flex h-[var(--header-h)] max-w-7xl items-center justify-between px-5 md:px-8">
-        <Logo />
+        <Logo priority />
         <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
           {links.map((link) => (
             <Link

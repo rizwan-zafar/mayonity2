@@ -60,7 +60,10 @@ export async function generateMetadata() {
       description: defaultDescription,
       images: [images[0].url],
     },
-    icons: { icon: "/favicon.svg" },
+    icons: {
+      icon: [{ url: "/favicon.png?v=3", type: "image/png", sizes: "32x32" }],
+      apple: [{ url: "/images/brand/mayonity-icon-512.png?v=3", sizes: "512x512", type: "image/png" }],
+    },
     robots: { index: true, follow: true },
     alternates: { canonical: "/" },
   };

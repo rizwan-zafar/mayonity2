@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useState } from "react";
 import { loginAction } from "@/app/actions/admin";
 import { PasswordField } from "@/components/admin/PasswordField";
+import { Logo } from "@/components/layout/Logo";
 
 export default function AdminLoginPage() {
   const [state, action, pending] = useActionState(loginAction, { error: "" });
@@ -15,7 +16,7 @@ export default function AdminLoginPage() {
   return (
     <section className="grid min-h-screen place-items-center px-5">
       <form action={action} className="glass w-full max-w-md rounded-[1.6rem] p-8">
-        <p className="font-mono text-xs uppercase tracking-[0.24em] text-cyan">Mayonity</p>
+        <Logo variant="full" className="justify-center" />
         <h1 className="display mt-3 text-4xl">Admin access</h1>
         <p className="mt-2 text-sm text-muted">Authorized operators only.</p>
         <label className="mt-8 grid gap-2 text-sm">
