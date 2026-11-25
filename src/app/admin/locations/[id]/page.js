@@ -3,6 +3,8 @@ import { requireAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { saveLocation } from "@/app/actions/admin";
 import { Field } from "@/components/admin/AdminShell";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
+import { AdminFormPendingOverlay } from "@/components/admin/AdminFormPendingOverlay";
 import { ServiceFaqEditor } from "@/components/admin/ServiceFaqEditor";
 import { parseJson } from "@/lib/utils";
 
@@ -21,7 +23,7 @@ export default async function LocationFormPage({ params }) {
   const lines = (value) => parseJson(value, []).join("\n");
 
   return (
-    <form action={saveLocation} className="grid max-w-3xl gap-4">
+    <form action={saveLocation} className="relative grid max-w-3xl gap-4">
       <h1 className="display text-4xl">{item ? "Edit location" : "New location"}</h1>
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <Field label="Name" name="name" defaultValue={item?.name} required />
@@ -45,7 +47,8 @@ export default async function LocationFormPage({ params }) {
       />
       <Field label="Cities (one per line)" name="cities" defaultValue={lines(item?.cities)} textarea />
       <ServiceFaqEditor defaultItems={parseLocationFaqs(item?.faqs)} />
-      <button className="rounded-full bg-white px-5 py-3 text-sm text-black">Save</button>
+      <AdminSubmitButton pendingLabel="Saving…">Save</AdminSubmitButton>
+      <AdminFormPendingOverlay />
     </form>
   );
 }

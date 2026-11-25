@@ -3,6 +3,7 @@
 import { useActionState, useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { submitContact } from "@/app/actions/public";
+import { getReferrerPath, getSourcePath, trackEvent } from "@/lib/trackEvent";
 
 const initial = { ok: false, error: "", fieldErrors: {}, values: null };
 
@@ -24,11 +25,52 @@ const emptyDraft = {
 export function ContactForm({ services, contactEmail = "hello@mayonity.com" }) {
   const [state, action, pending] = useActionState(submitContact, initial);
   const [draft, setDraft] = useState(emptyDraft);
+  const formRef = useRef(null);
+  const formStartTracked = useRef(false);
+  const draftAtSubmit = useRef(emptyDraft);
   const serviceOptions = (services || []).map((s) => s.name);
 
   useEffect(() => {
     if (state.values) setDraft({ ...emptyDraft, ...state.values });
   }, [state]);
+
+  useEffect(() => {
+    draftAtSubmit.current = draft;
+  }, [draft]);
+
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form || formStartTracked.current) return;
+
+    const onFocusIn = (event) => {
+      if (formStartTracked.current) return;
+      const target = event.target;
+      if (!(target instanceof HTMLElement)) return;
+      if (!form.contains(target)) return;
+      if (!target.matches("input, textarea, select, [role='combobox']")) return;
+
+      formStartTracked.current = true;
+      trackEvent("contact_form_start", {
+        referrer_path: getReferrerPath(),
+      });
+    };
+
+    form.addEventListener("focusin", onFocusIn);
+    return () => form.removeEventListener("focusin", onFocusIn);
+  }, []);
+
+  useEffect(() => {
+    if (!state.ok) return;
+
+    const submitted = draftAtSubmit.current;
+    if (!submitted.name?.trim() || !submitted.email?.trim()) return;
+
+    trackEvent("generate_lead", {
+      has_budget: Boolean(submitted.budget?.trim()),
+      service: submitted.service?.trim() || "",
+      source_path: getSourcePath(),
+    });
+  }, [state.ok]);
 
   const set =
     (key) =>
@@ -54,7 +96,7 @@ export function ContactForm({ services, contactEmail = "hello@mayonity.com" }) {
   }
 
   return (
-    <form action={action} className="glass grid gap-5 rounded-[1.8rem] p-6 md:p-8">
+    <form ref={formRef} action={action} className="glass grid gap-5 rounded-[1.8rem] p-6 md:p-8">
       <input type="text" name="website_url" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
       <div className="grid gap-5 md:grid-cols-2">
         <Field label="Name" name="name" required error={state.fieldErrors?.name} value={draft.name} onChange={set("name")} />

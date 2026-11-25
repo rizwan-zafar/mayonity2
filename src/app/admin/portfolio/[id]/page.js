@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { savePortfolio } from "@/app/actions/admin";
 import { Field } from "@/components/admin/AdminShell";
 import { UploadField, GalleryUpload } from "@/components/admin/UploadField";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
+import { AdminFormPendingOverlay } from "@/components/admin/AdminFormPendingOverlay";
 import { parseJson } from "@/lib/utils";
 
 export default async function PortfolioFormPage({ params }) {
@@ -17,7 +19,7 @@ export default async function PortfolioFormPage({ params }) {
   const lines = (value) => parseJson(value, []).join("\n");
 
   return (
-    <form action={savePortfolio} className="grid max-w-3xl gap-4">
+    <form action={savePortfolio} className="relative grid max-w-3xl gap-4">
       <h1 className="display text-4xl">{item ? "Edit project" : "New project"}</h1>
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <Field label="Name" name="name" defaultValue={item?.name} required />
@@ -59,7 +61,8 @@ export default async function PortfolioFormPage({ params }) {
       <Field label="Features" name="features" defaultValue={lines(item?.features)} textarea />
       <Field label="Technologies" name="technologies" defaultValue={lines(item?.technologies)} textarea />
       <Field label="Services" name="services" defaultValue={lines(item?.services)} textarea />
-      <button className="rounded-full bg-white px-5 py-3 text-sm text-black">Save</button>
+      <AdminSubmitButton pendingLabel="Saving…">Save</AdminSubmitButton>
+      <AdminFormPendingOverlay />
     </form>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
 
 async function uploadFile(file) {
   const data = new FormData();
@@ -18,10 +19,12 @@ export function UploadField({ label, name, defaultValue = "", required = false }
   const [url, setUrl] = useState(defaultValue || "");
   const [status, setStatus] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   async function handleFiles(files) {
     const file = files?.[0];
-    if (!file) return;
+    if (!file || uploading) return;
+    setUploading(true);
     setStatus("Uploading...");
     try {
       const next = await uploadFile(file);
@@ -29,6 +32,8 @@ export function UploadField({ label, name, defaultValue = "", required = false }
       setStatus("Uploaded");
     } catch (error) {
       setStatus(error.message);
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -38,8 +43,10 @@ export function UploadField({ label, name, defaultValue = "", required = false }
       <input type="hidden" name={name} value={url} required={required && !url} />
       <button
         type="button"
+        disabled={uploading}
         onClick={() => inputRef.current?.click()}
         onDragOver={(event) => {
+          if (uploading) return;
           event.preventDefault();
           setDragging(true);
         }}
@@ -49,7 +56,7 @@ export function UploadField({ label, name, defaultValue = "", required = false }
           setDragging(false);
           handleFiles(event.dataTransfer.files);
         }}
-        className={`relative overflow-hidden rounded-2xl border border-dashed px-4 py-8 text-left transition ${
+        className={`relative overflow-hidden rounded-2xl border border-dashed px-4 py-8 text-left transition disabled:cursor-not-allowed disabled:opacity-60 ${
           dragging ? "border-accent bg-accent/10" : "border-white/15 bg-white/5"
         }`}
       >
@@ -73,13 +80,33 @@ export function UploadField({ label, name, defaultValue = "", required = false }
         }}
       />
       <div className="flex items-center justify-between gap-3">
-        {status ? <span className="text-xs text-cyan">{status}</span> : <span />}
+        {status ? (
+          <span className="inline-flex items-center gap-1.5 text-xs text-cyan">
+            {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : null}
+            {status}
+          </span>
+        ) : (
+          <span />
+        )}
         {url ? (
           <div className="flex gap-3 text-xs">
-            <button type="button" className="text-accent" onClick={() => inputRef.current?.click()}>
+            <button
+              type="button"
+              disabled={uploading}
+              className="text-accent disabled:opacity-50"
+              onClick={() => inputRef.current?.click()}
+            >
               Replace
             </button>
-            <button type="button" className="text-red-300" onClick={() => { setUrl(""); setStatus(""); }}>
+            <button
+              type="button"
+              disabled={uploading}
+              className="text-red-300 disabled:opacity-50"
+              onClick={() => {
+                setUrl("");
+                setStatus("");
+              }}
+            >
               Remove
             </button>
           </div>
@@ -94,10 +121,12 @@ export function GalleryUpload({ name = "gallery", defaultItems = [] }) {
   const [items, setItems] = useState(defaultItems);
   const [status, setStatus] = useState("");
   const [dragging, setDragging] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   async function handleFiles(files) {
     const list = [...files].filter((file) => file.type.startsWith("image/"));
-    if (!list.length) return;
+    if (!list.length || uploading) return;
+    setUploading(true);
     setStatus(`Uploading ${list.length} image${list.length > 1 ? "s" : ""}...`);
     try {
       const uploaded = [];
@@ -108,6 +137,8 @@ export function GalleryUpload({ name = "gallery", defaultItems = [] }) {
       setStatus("Uploaded");
     } catch (error) {
       setStatus(error.message);
+    } finally {
+      setUploading(false);
     }
   }
 
@@ -132,8 +163,10 @@ export function GalleryUpload({ name = "gallery", defaultItems = [] }) {
         ))}
         <button
           type="button"
+          disabled={uploading}
           onClick={() => inputRef.current?.click()}
           onDragOver={(event) => {
+            if (uploading) return;
             event.preventDefault();
             setDragging(true);
           }}
@@ -143,11 +176,11 @@ export function GalleryUpload({ name = "gallery", defaultItems = [] }) {
             setDragging(false);
             handleFiles(event.dataTransfer.files);
           }}
-          className={`aspect-video rounded-xl border border-dashed text-xs text-muted ${
+          className={`aspect-video rounded-xl border border-dashed text-xs text-muted disabled:cursor-not-allowed disabled:opacity-60 ${
             dragging ? "border-accent bg-accent/10" : "border-white/15 bg-white/5"
           }`}
         >
-          Add images
+          {uploading ? "Uploading…" : "Add images"}
         </button>
       </div>
       <input
@@ -161,7 +194,12 @@ export function GalleryUpload({ name = "gallery", defaultItems = [] }) {
           event.target.value = "";
         }}
       />
-      {status ? <span className="text-xs text-cyan">{status}</span> : null}
+      {status ? (
+        <span className="inline-flex items-center gap-1.5 text-xs text-cyan">
+          {uploading ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden /> : null}
+          {status}
+        </span>
+      ) : null}
     </div>
   );
 }

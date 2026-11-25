@@ -5,6 +5,8 @@ import { savePost } from "@/app/actions/admin";
 import { Field } from "@/components/admin/AdminShell";
 import { TagPicker } from "@/components/admin/TagPicker";
 import { UploadField } from "@/components/admin/UploadField";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
+import { AdminFormPendingOverlay } from "@/components/admin/AdminFormPendingOverlay";
 
 export default async function PostFormPage({ params }) {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -25,7 +27,7 @@ export default async function PostFormPage({ params }) {
   const selected = new Set((item?.tags || []).map((row) => row.tagId));
 
   return (
-    <form action={savePost} className="grid max-w-3xl gap-4">
+    <form action={savePost} className="relative grid max-w-3xl gap-4">
       <h1 className="display text-4xl">{item ? "Edit post" : "New post"}</h1>
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <Field label="Title" name="title" defaultValue={item?.title} required />
@@ -62,7 +64,8 @@ export default async function PostFormPage({ params }) {
       <label className="text-sm"><input type="checkbox" name="published" defaultChecked={item?.published} /> Published</label>
       <label className="text-sm"><input type="checkbox" name="featured" defaultChecked={item?.featured} /> Featured</label>
       <label className="text-sm"><input type="checkbox" name="popular" defaultChecked={item?.popular} /> Popular</label>
-      <button className="rounded-full bg-white px-5 py-3 text-sm text-black">Save</button>
+      <AdminSubmitButton pendingLabel="Saving…">Save</AdminSubmitButton>
+      <AdminFormPendingOverlay />
     </form>
   );
 }

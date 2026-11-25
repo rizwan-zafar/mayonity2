@@ -3,6 +3,9 @@ import { requireAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { deleteSocial, deleteTechnology, saveSettings, saveSocial, saveTechnology } from "@/app/actions/admin";
 import { Field } from "@/components/admin/AdminShell";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
+import { AdminDeleteButton } from "@/components/admin/AdminDeleteButton";
+import { AdminFormPendingOverlay } from "@/components/admin/AdminFormPendingOverlay";
 import { getSettings } from "@/lib/data";
 
 export default async function AdminSettingsPage() {
@@ -15,7 +18,7 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="grid gap-12">
-      <form action={saveSettings} className="grid max-w-3xl gap-4">
+      <form action={saveSettings} className="relative grid max-w-3xl gap-4">
         <h1 className="display text-4xl">Website settings</h1>
         <Field label="Site name" name="siteName" defaultValue={settings.siteName} />
         <Field label="Tagline" name="tagline" defaultValue={settings.tagline} />
@@ -27,7 +30,8 @@ export default async function AdminSettingsPage() {
         <Field label="Default SEO title" name="seoDefaultTitle" defaultValue={settings.seoDefaultTitle} />
         <Field label="Default SEO description" name="seoDefaultDescription" defaultValue={settings.seoDefaultDescription} textarea />
         <Field label="Careers note" name="careersNote" defaultValue={settings.careersNote} textarea />
-        <button className="rounded-full bg-white px-5 py-3 text-sm text-black">Save settings</button>
+        <AdminSubmitButton pendingLabel="Saving…">Save settings</AdminSubmitButton>
+        <AdminFormPendingOverlay />
       </form>
 
       <section>
@@ -38,7 +42,7 @@ export default async function AdminSettingsPage() {
               <span>{item.platform} · {item.url}</span>
               <form action={deleteSocial}>
                 <input type="hidden" name="id" value={item.id} />
-                <button className="text-red-300">Delete</button>
+                <AdminDeleteButton />
               </form>
             </li>
           ))}
@@ -47,7 +51,12 @@ export default async function AdminSettingsPage() {
           <Field label="Platform" name="platform" />
           <Field label="URL" name="url" />
           <Field label="Order" name="sortOrder" type="number" defaultValue={0} />
-          <button className="rounded-full bg-white px-4 py-2 text-sm text-black">Add social</button>
+          <AdminSubmitButton
+            pendingLabel="Adding…"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-black transition disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Add social
+          </AdminSubmitButton>
         </form>
       </section>
 
@@ -59,7 +68,7 @@ export default async function AdminSettingsPage() {
               <span>{item.category} · {item.name}</span>
               <form action={deleteTechnology}>
                 <input type="hidden" name="id" value={item.id} />
-                <button className="text-red-300">Delete</button>
+                <AdminDeleteButton />
               </form>
             </li>
           ))}
@@ -68,7 +77,12 @@ export default async function AdminSettingsPage() {
           <Field label="Name" name="name" />
           <Field label="Category" name="category" defaultValue="Frontend" />
           <Field label="Order" name="sortOrder" type="number" defaultValue={0} />
-          <button className="rounded-full bg-white px-4 py-2 text-sm text-black">Add technology</button>
+          <AdminSubmitButton
+            pendingLabel="Adding…"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-black transition disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Add technology
+          </AdminSubmitButton>
         </form>
       </section>
     </div>
