@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { deleteService } from "@/app/actions/admin";
+import { AdminDeleteButton } from "@/components/admin/AdminDeleteButton";
 import Link from "next/link";
 
 export default async function AdminServicesPage() {
@@ -22,7 +23,7 @@ export default async function AdminServicesPage() {
               <Link href={`/admin/services/${item.id}`} className="text-accent">Edit</Link>
               <form action={deleteService}>
                 <input type="hidden" name="id" value={item.id} />
-                <button className="text-red-300">Delete</button>
+                <AdminDeleteButton />
               </form>
             </div>
           </li>

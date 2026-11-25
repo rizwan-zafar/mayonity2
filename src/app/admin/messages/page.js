@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { updateMessageStatus } from "@/app/actions/admin";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 
 export default async function AdminMessagesPage() {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -26,7 +27,12 @@ export default async function AdminMessagesPage() {
                   <option value="contacted">Contacted</option>
                   <option value="archived">Archived</option>
                 </select>
-                <button className="rounded-full bg-white px-3 py-1 text-sm text-black">Update</button>
+                <AdminSubmitButton
+                  pendingLabel="Updating…"
+                  className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-3 py-1 text-sm text-black transition disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  Update
+                </AdminSubmitButton>
               </form>
             </div>
             <p className="mt-4 text-sm text-muted">{item.message}</p>

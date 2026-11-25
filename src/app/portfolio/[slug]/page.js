@@ -5,6 +5,7 @@ import { getPortfolioBySlug, getPublishedPortfolio, getRelatedPortfolio } from "
 import { parseJson, siteUrl } from "@/lib/utils";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { shareImagesMeta } from "@/lib/seo-meta";
+import { AttributionTracker } from "@/components/analytics/AttributionTracker";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -50,6 +51,7 @@ export default async function PortfolioDetailPage({ params }) {
           { name: project.name, path: `/portfolio/${project.slug}` },
         ])}
       />
+      <AttributionTracker path={`/portfolio/${project.slug}`} />
       <section className="px-5 pb-10 pt-32 md:px-8 md:pt-40">
         <div className="mx-auto max-w-7xl">
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-cyan">

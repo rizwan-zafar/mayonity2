@@ -3,6 +3,7 @@ import { requireAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { saveStatistic } from "@/app/actions/admin";
 import { Field } from "@/components/admin/AdminShell";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 
 export default async function AdminStatisticsPage() {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -18,7 +19,12 @@ export default async function AdminStatisticsPage() {
             <Field label="Label" name="label" defaultValue={item.label} />
             <Field label="Value" name="value" type="number" defaultValue={item.value} />
             <Field label="Suffix" name="suffix" defaultValue={item.suffix} />
-            <button className="self-end rounded-full bg-white px-4 py-2 text-sm text-black">Save</button>
+            <AdminSubmitButton
+              pendingLabel="Saving…"
+              className="inline-flex items-center justify-center gap-2 self-end rounded-full bg-white px-4 py-2 text-sm text-black transition disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              Save
+            </AdminSubmitButton>
           </form>
         ))}
       </div>

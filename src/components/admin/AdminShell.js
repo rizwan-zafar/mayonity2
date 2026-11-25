@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { logoutAction } from "@/app/actions/admin";
 import { Logo } from "@/components/layout/Logo";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 
 const links = [
   { href: "/admin", label: "Dashboards" },
@@ -41,7 +42,12 @@ export function AdminShell({ user, children }) {
             ))}
           </nav>
           <form action={logoutAction} className="mt-6">
-            <button className="text-sm text-muted hover:text-white">Sign out</button>
+            <AdminSubmitButton
+              pendingLabel="Signing out…"
+              className="inline-flex items-center gap-2 text-sm text-muted transition hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Sign out
+            </AdminSubmitButton>
           </form>
         </aside>
         <div className="p-5 md:p-8">{children}</div>

@@ -5,6 +5,8 @@ import { saveService } from "@/app/actions/admin";
 import { Field } from "@/components/admin/AdminShell";
 import { UploadField } from "@/components/admin/UploadField";
 import { ServiceFaqEditor } from "@/components/admin/ServiceFaqEditor";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
+import { AdminFormPendingOverlay } from "@/components/admin/AdminFormPendingOverlay";
 import { parseJson } from "@/lib/utils";
 
 function parseServiceFaqs(value) {
@@ -22,7 +24,7 @@ export default async function ServiceFormPage({ params }) {
   const lines = (value) => parseJson(value, []).join("\n");
 
   return (
-    <form action={saveService} className="grid max-w-3xl gap-4">
+    <form action={saveService} className="relative grid max-w-3xl gap-4">
       <h1 className="display text-4xl">{item ? "Edit service" : "New service"}</h1>
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <Field label="Name" name="name" defaultValue={item?.name} required />
@@ -43,7 +45,8 @@ export default async function ServiceFormPage({ params }) {
       <Field label="Benefits" name="benefits" defaultValue={lines(item?.benefits)} textarea />
       <Field label="Features" name="features" defaultValue={lines(item?.features)} textarea />
       <ServiceFaqEditor defaultItems={parseServiceFaqs(item?.faqs)} />
-      <button className="rounded-full bg-white px-5 py-3 text-sm text-black">Save</button>
+      <AdminSubmitButton pendingLabel="Saving…">Save</AdminSubmitButton>
+      <AdminFormPendingOverlay />
     </form>
   );
 }

@@ -6,6 +6,8 @@ import { documentTitle, formatDate, readingTimeFrom, siteUrl, stripTrailingBrand
 import { JsonLd, articleJsonLd, breadcrumbJsonLd, faqPageJsonLd } from "@/lib/seo";
 import { shareImagesMeta } from "@/lib/seo-meta";
 import { incrementBlogPostViews } from "@/lib/blog-views";
+import { AttributionTracker } from "@/components/analytics/AttributionTracker";
+import { BlogArticleAnalytics } from "@/components/analytics/BlogArticleAnalytics";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -59,6 +61,8 @@ export default async function BlogDetailPage({ params }) {
       />
       <JsonLd data={articleJsonLd(post, settings)} />
       {faqs.length ? <JsonLd data={faqPageJsonLd(faqs)} /> : null}
+      <AttributionTracker path={`/blog/${post.slug}`} />
+      <BlogArticleAnalytics />
       <article className="px-5 pb-20 pt-32 md:px-8 md:pt-40">
         <div className="mx-auto max-w-7xl">
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-cyan">
@@ -108,6 +112,7 @@ export default async function BlogDetailPage({ params }) {
             </div>
           </aside>
           <div
+            data-blog-article
             className="prose-mayonity max-w-none"
             dangerouslySetInnerHTML={{ __html: html }}
           />

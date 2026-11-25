@@ -4,6 +4,8 @@ import { requireAdmin } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { deletePost, saveCategory, saveTag } from "@/app/actions/admin";
 import { AdminHeader } from "@/components/admin/AdminShell";
+import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
+import { AdminDeleteButton } from "@/components/admin/AdminDeleteButton";
 
 export default async function AdminBlogPage() {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -28,7 +30,7 @@ export default async function AdminBlogPage() {
                 <Link href={`/admin/blog/${item.id}`} className="text-accent">Edit</Link>
                 <form action={deletePost}>
                   <input type="hidden" name="id" value={item.id} />
-                  <button className="text-red-300">Delete</button>
+                  <AdminDeleteButton />
                 </form>
               </div>
             </li>
@@ -39,13 +41,23 @@ export default async function AdminBlogPage() {
         <form action={saveCategory} className="glass grid gap-3 rounded-2xl p-5">
           <h2 className="display text-2xl">New category</h2>
           <input name="name" required placeholder="Name" className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm" />
-          <button className="rounded-full bg-white px-4 py-2 text-sm text-black">Add</button>
+          <AdminSubmitButton
+            pendingLabel="Adding…"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-black transition disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Add
+          </AdminSubmitButton>
           <p className="text-xs text-muted">{categories.map((c) => c.name).join(" · ")}</p>
         </form>
         <form action={saveTag} className="glass grid gap-3 rounded-2xl p-5">
           <h2 className="display text-2xl">New tag</h2>
           <input name="name" required placeholder="Name" className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm" />
-          <button className="rounded-full bg-white px-4 py-2 text-sm text-black">Add</button>
+          <AdminSubmitButton
+            pendingLabel="Adding…"
+            className="inline-flex items-center justify-center gap-2 rounded-full bg-white px-4 py-2 text-sm text-black transition disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            Add
+          </AdminSubmitButton>
           <p className="text-xs text-muted">{tags.map((t) => t.name).join(" · ")}</p>
         </form>
       </div>
