@@ -9,23 +9,23 @@ export function Ga4() {
   const pathname = usePathname();
   const [loadAnalytics, setLoadAnalytics] = useState(null);
 
-  const id = process.env.NEXT_PUBLIC_GA_ID?.trim();
+  const GA_ID = (process.env.NEXT_PUBLIC_GA_ID || "G-5LKZXSQLML").trim();
 
   useLayoutEffect(() => {
     setLoadAnalytics(shouldLoadAnalytics(pathname));
   }, [pathname]);
 
-  if (!id || loadAnalytics !== true) return null;
+  if (!GA_ID || loadAnalytics !== true) return null;
 
   return (
     <>
-      <Script src={`https://www.googletagmanager.com/gtag/js?id=${id}`} strategy="afterInteractive" />
+      <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
       <Script id="ga4-init" strategy="afterInteractive">
         {`
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${id}');
+          gtag('config', '${GA_ID}');
         `}
       </Script>
     </>
