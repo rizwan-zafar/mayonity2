@@ -69,11 +69,11 @@ jobs:
           AUTH_SECRET: ${{ secrets.ENV_AUTH_SECRET }}
           NEXT_PUBLIC_SITE_URL: ${{ secrets.ENV_NEXT_PUBLIC_SITE_URL }}
           SKIP_DB_BUILD: "1"
+          NODE_ENV: production
         run: |
           npm ci
-          npx prisma generate
           npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script > prisma/deploy.sql
-          NODE_ENV=production npx next build
+          npm run build
 
       - name: Pack release
         run: |

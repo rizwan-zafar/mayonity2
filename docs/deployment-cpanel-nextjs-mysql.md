@@ -12,7 +12,7 @@ flowchart LR
     Git[Git push main]
   end
   subgraph gha [GitHub Actions]
-    Build[npm ci + prisma generate + next build]
+    Build[npm ci + migrate diff + npm run build]
     Pack[tar.gz release]
     SSH[scp + ssh]
   end
@@ -167,8 +167,8 @@ Workflow pattern: `.github/workflows/deploy.yml`
 **Build job (ubuntu-latest, Node 20):**
 
 1. `npm ci`
-2. `npx prisma generate`
-3. `NODE_ENV=production npx next build` (with `DATABASE_URL` from secrets only for generate/build if needed; use `SKIP_DB_BUILD=1` if pages must not hit DB at build time)
+2. `npx prisma migrate diff … > prisma/deploy.sql`
+3. `npm run build` (`prisma generate` + `next build --webpack`) with `NODE_ENV=production`, `SKIP_DB_BUILD=1`, and build-time secrets (`DATABASE_URL`, `NEXT_PUBLIC_SITE_URL`, etc.). The cPanel server does not run `next build`—failures must be caught on the build host. Locally, run `npm run build:prod` (with `.env` including `NEXT_PUBLIC_SITE_URL`) to match CI before push.
 4. Pack repo into `tar.gz` (exclude `.git`, `.github`, `.env`, local uploads, SSH keys)
 5. SSH: upload `.env`, stream-extract tarball into `CPANEL_APP_PATH`
 6. Run `scripts/cpanel-build.sh` on the server (restart Node app)

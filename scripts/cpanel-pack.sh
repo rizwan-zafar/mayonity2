@@ -14,9 +14,6 @@ if [ ! -d node_modules ]; then
   exit 1
 fi
 
-echo "Generating Prisma client (includes Linux engines for cPanel)..."
-npx prisma generate
-
 echo "Writing prisma/deploy.sql..."
 npx prisma migrate diff \
   --from-empty \
@@ -30,7 +27,7 @@ echo "Building Next.js for ${SITE_URL}..."
 export NODE_ENV=production
 export SKIP_DB_BUILD=1
 export NEXT_PUBLIC_SITE_URL="$SITE_URL"
-npx next build
+npm run build
 
 echo "Packing ${OUT}..."
 rm -f "$OUT"

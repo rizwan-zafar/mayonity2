@@ -52,7 +52,8 @@ Default seeded admin (change after first login): `admin@mayonity.com`.
 | Command | What it does |
 |---|---|
 | `npm run dev` | Local Next.js dev server |
-| `npm run build` | `prisma generate` + production build |
+| `npm run build` | `prisma generate` + production Webpack build (same as GitHub Actions / cPanel pack) |
+| `npm run build:prod` | Same bundler with `NODE_ENV=production` and `SKIP_DB_BUILD=1` (use before push; matches CI env) |
 | `npm start` | Production server (`server.js`) for cPanel |
 | `npm run db:push` | Push Prisma schema to the DB in `DATABASE_URL` |
 | `npm run db:seed` | Seed (skips if users already exist) |
@@ -101,7 +102,7 @@ Blog categories can be added from **Admin → Blog**.
 
 Push to **`main`** runs `.github/workflows/deploy.yml`:
 
-1. GitHub builds on Ubuntu (`npm ci`, Prisma generate, `next build`)
+1. GitHub builds on Ubuntu (`npm ci`, `prisma migrate diff`, `npm run build` with Webpack)
 2. SSH upload to `CPANEL_APP_PATH`
 3. Writes `.env` from GitHub secrets
 4. Restarts the Node app
