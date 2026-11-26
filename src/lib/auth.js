@@ -11,7 +11,11 @@ function getSecret() {
   return new TextEncoder().encode(secret);
 }
 
-export async function createSessionToken(user) {
+const SESSION_MAX_AGE_REMEMBER_SEC = 60 * 60 * 24 * 30;
+
+/** @param {boolean} [remember] */
+export async function createSessionToken(user, remember = false) {
+  const lifetime = remember ? "30d" : "12h";
   return new SignJWT({
     sub: String(user.id),
     email: user.email,
@@ -20,7 +24,7 @@ export async function createSessionToken(user) {
   })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime(lifetime)
     .sign(getSecret());
 }
 
@@ -34,15 +38,22 @@ export async function verifySessionToken(token) {
   }
 }
 
-export async function setSessionCookie(token) {
+/** @param {boolean} [remember] */
+export async function setSessionCookie(token, remember = false) {
   const jar = await cookies();
-  jar.set(COOKIE, token, {
+  const options = {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 24 * 7,
-  });
+  };
+
+  if (remember) {
+    jar.set(COOKIE, token, { ...options, maxAge: SESSION_MAX_AGE_REMEMBER_SEC });
+    return;
+  }
+
+  jar.set(COOKIE, token, options);
 }
 
 export async function clearSessionCookie() {

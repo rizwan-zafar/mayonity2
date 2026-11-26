@@ -67,8 +67,9 @@ export async function loginAction(prev, formData) {
   const ok = await bcrypt.compare(parsed.data.password, user.password);
   if (!ok) return { error: "Invalid credentials.", email: parsed.data.email };
 
-  const token = await createSessionToken(user);
-  await setSessionCookie(token);
+  const remember = formData.get("remember") === "on";
+  const token = await createSessionToken(user, remember);
+  await setSessionCookie(token, remember);
   redirect("/admin");
 }
 
