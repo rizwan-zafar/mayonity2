@@ -27,3 +27,24 @@ export function shareImagesMeta(imageUrl) {
     twitter: { images: [images[0].url] },
   };
 }
+
+export function buildStaticPageMetadata({ title, description, canonical }) {
+  const images = shareImagesMeta();
+  return {
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description,
+      url: siteUrl(canonical),
+      ...images.openGraph,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...images.twitter,
+    },
+  };
+}

@@ -1,12 +1,13 @@
 import { PageHero, CtaBand } from "@/components/ui/Section";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { buildStaticPageMetadata } from "@/lib/seo-meta";
 
-export const metadata = {
+export const metadata = buildStaticPageMetadata({
   title: "About Mayonity",
   description:
     "Mayonity is a software development and digital solutions company. Design, engineering, AI and business — building products for what comes next.",
-  alternates: { canonical: "/about" },
-};
+  canonical: "/about",
+});
 
 const timeline = [
   {

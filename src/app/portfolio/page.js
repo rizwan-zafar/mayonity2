@@ -2,12 +2,13 @@ import { PageHero } from "@/components/ui/Section";
 import { PortfolioFilter } from "@/components/portfolio/PortfolioFilter";
 import { getPublishedPortfolio } from "@/lib/data";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { buildStaticPageMetadata } from "@/lib/seo-meta";
 
-export const metadata = {
+export const metadata = buildStaticPageMetadata({
   title: "Portfolio",
   description: "Selected Mayonity work across web, mobile, e-commerce, WordPress and UI/UX.",
-  alternates: { canonical: "/portfolio" },
-};
+  canonical: "/portfolio",
+});
 
 export default async function PortfolioPage() {
   const projects = await getPublishedPortfolio();

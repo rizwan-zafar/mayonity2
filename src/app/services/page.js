@@ -2,12 +2,13 @@ import Link from "next/link";
 import { PageHero } from "@/components/ui/Section";
 import { getActiveServices } from "@/lib/data";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { buildStaticPageMetadata } from "@/lib/seo-meta";
 
-export const metadata = {
+export const metadata = buildStaticPageMetadata({
   title: "Services",
   description: "Website design and development, WordPress, mobile apps, e-commerce, UI/UX, data and technology consulting from Mayonity.",
-  alternates: { canonical: "/services" },
-};
+  canonical: "/services",
+});
 
 export default async function ServicesPage() {
   const services = await getActiveServices();

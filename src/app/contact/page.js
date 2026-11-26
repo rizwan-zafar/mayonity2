@@ -2,12 +2,13 @@ import { PageHero } from "@/components/ui/Section";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { getActiveServices, getSettings, getSocialLinks } from "@/lib/data";
 import { JsonLd, breadcrumbJsonLd, localBusinessJsonLd } from "@/lib/seo";
+import { buildStaticPageMetadata } from "@/lib/seo-meta";
 
-export const metadata = {
+export const metadata = buildStaticPageMetadata({
   title: "Contact",
   description: "Have an idea from the future? Contact Mayonity to start a project.",
-  alternates: { canonical: "/contact" },
-};
+  canonical: "/contact",
+});
 
 export default async function ContactPage({ searchParams }) {
   const params = await searchParams;

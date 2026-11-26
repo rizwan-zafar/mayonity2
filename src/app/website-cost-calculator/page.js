@@ -1,13 +1,14 @@
 import { WebsiteCostCalculator } from "@/components/calculator/WebsiteCostCalculator";
 import { PageHero } from "@/components/ui/Section";
 import { JsonLd, breadcrumbJsonLd, faqPageJsonLd } from "@/lib/seo";
+import { buildStaticPageMetadata } from "@/lib/seo-meta";
 
-export const metadata = {
+export const metadata = buildStaticPageMetadata({
   title: "Website Cost Calculator for Singapore, Malaysia and Australia (2026)",
   description:
     "Estimate website costs for Singapore, Malaysia and Australia. Typical ranges by site type, pages and features. Not a formal quote.",
-  alternates: { canonical: "/website-cost-calculator" },
-};
+  canonical: "/website-cost-calculator",
+});
 
 const FAQS = [
   {

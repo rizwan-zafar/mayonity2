@@ -3,12 +3,13 @@ import { PageHero } from "@/components/ui/Section";
 import { getPublishedPosts } from "@/lib/data";
 import { formatDate } from "@/lib/utils";
 import { JsonLd, breadcrumbJsonLd } from "@/lib/seo";
+import { buildStaticPageMetadata } from "@/lib/seo-meta";
 
-export const metadata = {
+export const metadata = buildStaticPageMetadata({
   title: "Journal",
   description: "Mayonity writing on technology, product, design, mobile, commerce and digital transformation.",
-  alternates: { canonical: "/blog" },
-};
+  canonical: "/blog",
+});
 
 export default async function BlogPage({ searchParams }) {
   const params = await searchParams;
