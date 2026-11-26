@@ -1,9 +1,15 @@
 "use client";
 
 import Script from "next/script";
-import { NOTRACK_COOKIE_NAME, NOTRACK_STORAGE_KEY } from "@/lib/analyticsExclusion";
+import { usePathname } from "next/navigation";
+import {
+  isNotrackBootstrapPath,
+  NOTRACK_COOKIE_NAME,
+  NOTRACK_STORAGE_KEY,
+} from "@/lib/analyticsExclusion";
 
 const bootstrapScript = `(function(){
+  if(location.pathname.indexOf("/admin")===0)return;
   var key=${JSON.stringify(NOTRACK_STORAGE_KEY)};
   var cookieName=${JSON.stringify(NOTRACK_COOKIE_NAME)};
   var params=new URLSearchParams(window.location.search);
@@ -18,6 +24,9 @@ const bootstrapScript = `(function(){
 })();`;
 
 export function NotrackBootstrap() {
+  const pathname = usePathname();
+  if (!isNotrackBootstrapPath(pathname)) return null;
+
   return (
     <Script id="mayonity-notrack-bootstrap" strategy="beforeInteractive">
       {bootstrapScript}

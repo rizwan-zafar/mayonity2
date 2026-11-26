@@ -11,6 +11,7 @@ function getSecret() {
   return new TextEncoder().encode(secret);
 }
 
+const SESSION_MAX_AGE_DEFAULT_SEC = 60 * 60 * 12;
 const SESSION_MAX_AGE_REMEMBER_SEC = 60 * 60 * 24 * 30;
 
 /** @param {boolean} [remember] */
@@ -53,7 +54,7 @@ export async function setSessionCookie(token, remember = false) {
     return;
   }
 
-  jar.set(COOKIE, token, options);
+  jar.set(COOKIE, token, { ...options, maxAge: SESSION_MAX_AGE_DEFAULT_SEC });
 }
 
 export async function clearSessionCookie() {

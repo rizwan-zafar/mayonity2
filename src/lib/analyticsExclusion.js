@@ -6,6 +6,11 @@ export function isAdminAnalyticsPath(pathname) {
   return pathname?.startsWith("/admin") ?? false;
 }
 
+/** @param {string | null | undefined} pathname */
+export function isNotrackBootstrapPath(pathname) {
+  return !isAdminAnalyticsPath(pathname);
+}
+
 /** @returns {boolean} */
 export function readNotrackFlag() {
   if (typeof window === "undefined") return false;
