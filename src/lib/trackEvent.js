@@ -1,3 +1,5 @@
+import { readNotrackFlag } from "@/lib/analyticsExclusion";
+
 const ANALYTICS_CONSENT_STORAGE_KEY = "mayonity_analytics_consent";
 
 /** @returns {boolean} */
@@ -20,6 +22,7 @@ export function hasAnalyticsConsent() {
  */
 export function trackEvent(name, params = {}) {
   if (typeof window === "undefined") return;
+  if (readNotrackFlag()) return;
   if (!hasAnalyticsConsent()) return;
   if (typeof window.gtag !== "function") return;
 

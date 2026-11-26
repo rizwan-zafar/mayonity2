@@ -2,13 +2,14 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+import { shouldLoadAnalytics } from "@/lib/analyticsExclusion";
 import { trackEvent } from "@/lib/trackEvent";
 
 export function Ga4EventListeners() {
   const pathname = usePathname();
 
   useEffect(() => {
-    if (pathname?.startsWith("/admin")) return;
+    if (!shouldLoadAnalytics(pathname)) return;
 
     const onClick = (event) => {
       const anchor = event.target.closest?.('a[href^="mailto:"]');
