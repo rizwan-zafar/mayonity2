@@ -3,6 +3,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/layout/CustomCursor";
 import { SiteChrome } from "@/components/layout/SiteChrome";
+import { NotrackBootstrap } from "@/components/analytics/NotrackBootstrap";
 import { Ga4 } from "@/components/analytics/Ga4";
 import { Ga4EventListeners } from "@/components/analytics/Ga4EventListeners";
 import { ClarityScript } from "@/components/ClarityScript";
@@ -90,6 +91,7 @@ export default async function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} ${syne.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <NotrackBootstrap />
         <Ga4 />
         <Ga4EventListeners />
         <ClarityScript />

@@ -1,8 +1,21 @@
+"use client";
+
+import { useLayoutEffect, useState } from "react";
 import Script from "next/script";
+import { usePathname } from "next/navigation";
+import { shouldLoadAnalytics } from "@/lib/analyticsExclusion";
 
 export function Ga4() {
+  const pathname = usePathname();
+  const [loadAnalytics, setLoadAnalytics] = useState(null);
+
   const id = process.env.NEXT_PUBLIC_GA_ID?.trim();
-  if (!id) return null;
+
+  useLayoutEffect(() => {
+    setLoadAnalytics(shouldLoadAnalytics(pathname));
+  }, [pathname]);
+
+  if (!id || loadAnalytics !== true) return null;
 
   return (
     <>
