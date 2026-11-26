@@ -47,6 +47,15 @@ export default async function BlogPage({ searchParams }) {
           </div>
         </div>
         <aside className="space-y-6">
+          <nav className="glass rounded-[1.4rem] p-5">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted">Tool</p>
+            <Link href="/website-cost-calculator" className="mt-3 block text-sm text-white hover:text-accent">
+              Website cost calculator
+            </Link>
+            <p className="mt-2 text-xs text-muted">
+              Typical budgets for sites in Singapore, Malaysia and Australia.
+            </p>
+          </nav>
           <form className="glass rounded-[1.4rem] p-5">
             <label htmlFor="q" className="font-mono text-xs uppercase tracking-[0.2em] text-muted">Search</label>
             <input id="q" name="q" defaultValue={q} className="mt-3 w-full rounded-full border border-white/10 bg-transparent px-4 py-2 text-sm" placeholder="Search articles" />

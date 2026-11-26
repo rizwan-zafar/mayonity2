@@ -57,6 +57,7 @@ export function Footer({ settings, socials, services, locations = [] }) {
           <p className="mb-4 font-mono text-xs uppercase tracking-[0.22em] text-muted">Resources</p>
           <ul className="grid gap-2 text-sm text-muted">
             <li><Link href="/blog" className="hover:text-white">Blog</Link></li>
+            <li><Link href="/website-cost-calculator" className="hover:text-white">Website cost calculator</Link></li>
             <li><Link href="/portfolio" className="hover:text-white">Portfolio</Link></li>
             <li><Link href="/testimonials" className="hover:text-white">Testimonials</Link></li>
             <li><Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link></li>

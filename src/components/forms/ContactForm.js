@@ -4,6 +4,10 @@ import { useActionState, useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { submitContact } from "@/app/actions/public";
 import { getReferrerPath, getSourcePath, trackEvent } from "@/lib/trackEvent";
+import {
+  CALCULATOR_CONTACT_PREFILL_KEY,
+} from "@/lib/websiteCostCalculatorConfig";
+import { getCountryLabel, getSiteTypeLabel } from "@/lib/websiteCostCalculator";
 
 const initial = { ok: false, error: "", fieldErrors: {}, values: null };
 
@@ -22,16 +26,48 @@ const emptyDraft = {
   message: "",
 };
 
-export function ContactForm({ services, contactEmail = "hello@mayonity.com" }) {
+function buildCalculatorPrefillMessage(calculatorPrefill) {
+  if (!calculatorPrefill?.type || !calculatorPrefill?.country) return "";
+
+  let range = "";
+  try {
+    const raw = sessionStorage.getItem(CALCULATOR_CONTACT_PREFILL_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (
+        parsed?.type === calculatorPrefill.type &&
+        parsed?.country === calculatorPrefill.country &&
+        typeof parsed.range === "string"
+      ) {
+        range = parsed.range;
+      }
+    }
+  } catch {
+    // no-op
+  }
+
+  const typeLabel = getSiteTypeLabel(calculatorPrefill.type);
+  const countryLabel = getCountryLabel(calculatorPrefill.country);
+  const rangePart = range ? ` Estimated range from the calculator: ${range}.` : "";
+  return `Project type: ${typeLabel}. Country: ${countryLabel}.${rangePart}`;
+}
+
+export function ContactForm({ services, contactEmail = "hello@mayonity.com", calculatorPrefill = null }) {
   const [state, action, pending] = useActionState(submitContact, initial);
-  const [draft, setDraft] = useState(emptyDraft);
+  const [draft, setDraft] = useState(() => ({
+    ...emptyDraft,
+    message: buildCalculatorPrefillMessage(calculatorPrefill),
+  }));
   const formRef = useRef(null);
   const formStartTracked = useRef(false);
   const draftAtSubmit = useRef(emptyDraft);
   const serviceOptions = (services || []).map((s) => s.name);
 
   useEffect(() => {
-    if (state.values) setDraft({ ...emptyDraft, ...state.values });
+    if (!state.values) return;
+    // Restoring fields after server validation — intentional one-shot sync from useActionState.
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- server action field restore
+    setDraft({ ...emptyDraft, ...state.values });
   }, [state]);
 
   useEffect(() => {

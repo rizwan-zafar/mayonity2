@@ -23,6 +23,7 @@ function staticEntries() {
     "/testimonials",
     "/blog",
     "/contact",
+    "/website-cost-calculator",
     "/careers",
     "/privacy-policy",
     "/terms-and-conditions",
