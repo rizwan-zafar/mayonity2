@@ -26,8 +26,16 @@ export default async function AdminBlogPage() {
                 <p>{item.title}</p>
                 <p className="text-xs text-muted">{item.published ? "Published" : "Draft"} · {item.category?.name}</p>
               </div>
-              <div className="flex gap-3 text-sm">
+              <div className="flex flex-wrap gap-3 text-sm">
                 <Link href={`/admin/blog/${item.id}`} className="text-accent">Edit</Link>
+                <Link href={`/admin/blog/${item.id}#blog-post-preview`} className="text-accent">
+                  Preview
+                </Link>
+                {item.published && item.slug ? (
+                  <Link href={`/blog/${item.slug}`} className="text-accent" target="_blank" rel="noreferrer">
+                    View
+                  </Link>
+                ) : null}
                 <form action={deletePost}>
                   <input type="hidden" name="id" value={item.id} />
                   <AdminDeleteButton />

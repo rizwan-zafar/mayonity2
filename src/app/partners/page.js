@@ -1,10 +1,11 @@
 import { PageHero } from "@/components/ui/Section";
 import { PartnersCtaLinks } from "@/components/partners/PartnersCtaLinks";
+import { ScopingSprintCta } from "@/components/partners/ScopingSprintCta";
 import { JsonLd, breadcrumbJsonLd, faqPageJsonLd } from "@/lib/seo";
 import { buildStaticPageMetadata } from "@/lib/seo-meta";
 
 export const metadata = buildStaticPageMetadata({
-  title: "Development partner for agencies in Singapore, Malaysia and Australia | Mayonity",
+  title: "Development partner for agencies in Singapore, Malaysia and Australia",
   description:
     "A remote development team in Lahore for small agencies and consultants. Websites and web apps built to your brief, from USD 1,000. Start with one small project.",
   canonical: "/partners",
@@ -85,6 +86,16 @@ export default function PartnersPage() {
           <p className="mt-4 text-muted">
             Websites, web apps, e-commerce builds, changes to existing sites.
           </p>
+        </article>
+        <article className="glass rounded-[1.6rem] p-8">
+          <h2 className="display text-3xl text-white">Start with a scoping sprint</h2>
+          <p className="mt-4 text-muted">
+            Not ready to commit to a build? Start with a scoping sprint. You send us the brief or the design. In about
+            one week we send back a written scope, a fixed price and a timeline. The sprint is USD 400. If you go ahead
+            with the build, we take the USD 400 off the project price. If you don&apos;t, you keep the scope document and
+            can use it with anyone.
+          </p>
+          <ScopingSprintCta />
         </article>
       </section>
       <section className="mx-auto max-w-3xl px-5 pb-16 md:px-8">

@@ -7,6 +7,7 @@ import { TagPicker } from "@/components/admin/TagPicker";
 import { UploadField } from "@/components/admin/UploadField";
 import { AdminSubmitButton } from "@/components/admin/AdminSubmitButton";
 import { AdminFormPendingOverlay } from "@/components/admin/AdminFormPendingOverlay";
+import { BlogPostPreview } from "@/components/admin/BlogPostPreview";
 
 export default async function PostFormPage({ params }) {
   if (!(await requireAdmin())) redirect("/admin/login");
@@ -27,7 +28,8 @@ export default async function PostFormPage({ params }) {
   const selected = new Set((item?.tags || []).map((row) => row.tagId));
 
   return (
-    <form action={savePost} className="relative grid max-w-3xl gap-4">
+    <div className="grid gap-8 lg:grid-cols-[minmax(0,28rem)_1fr] lg:items-start lg:gap-10">
+    <form action={savePost} className="relative grid max-w-3xl gap-4 lg:max-w-none">
       <h1 className="display text-4xl">{item ? "Edit post" : "New post"}</h1>
       {item ? <input type="hidden" name="id" value={item.id} /> : null}
       <Field label="Title" name="title" defaultValue={item?.title} required />
@@ -67,5 +69,15 @@ export default async function PostFormPage({ params }) {
       <AdminSubmitButton pendingLabel="Saving…">Save</AdminSubmitButton>
       <AdminFormPendingOverlay />
     </form>
+    <div className="min-w-0">
+      {item ? (
+        <BlogPostPreview postId={item.id} className="lg:sticky lg:top-24" />
+      ) : (
+        <p className="rounded-2xl border border-white/10 bg-white/[0.03] p-5 text-sm text-muted">
+          Save the post once to enable live preview. The preview uses the same layout as the public blog article page.
+        </p>
+      )}
+    </div>
+    </div>
   );
 }

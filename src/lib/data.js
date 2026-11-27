@@ -222,17 +222,28 @@ export async function getPublishedPosts({
   return { posts, total, categories, tags, featured, popular };
 }
 
+const blogPostDetailInclude = {
+  author: { select: { name: true, email: true } },
+  teamMember: { select: { name: true, position: true, photo: true } },
+  category: true,
+  tags: { include: { tag: true } },
+};
+
 export const getPostBySlug = cache(async (slug) => {
   return prisma.blogPost.findFirst({
     where: { slug, published: true },
-    include: {
-      author: { select: { name: true, email: true } },
-      teamMember: { select: { name: true, position: true, photo: true } },
-      category: true,
-      tags: { include: { tag: true } },
-    },
+    include: blogPostDetailInclude,
   });
 });
+
+export async function getPostByIdForPreview(id) {
+  const numericId = Number(id);
+  if (!Number.isFinite(numericId)) return null;
+  return prisma.blogPost.findUnique({
+    where: { id: numericId },
+    include: blogPostDetailInclude,
+  });
+}
 
 export async function getRelatedPosts(post) {
   return prisma.blogPost.findMany({
