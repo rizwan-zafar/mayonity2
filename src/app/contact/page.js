@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/ui/Section";
 import { ContactForm } from "@/components/forms/ContactForm";
+import { QUOTE_REVIEW_SERVICE_OPTION } from "@/components/marketing/QuoteReviewPromo";
 import { getActiveServices, getSettings, getSocialLinks } from "@/lib/data";
 import { JsonLd, breadcrumbJsonLd, localBusinessJsonLd } from "@/lib/seo";
 import { buildStaticPageMetadata } from "@/lib/seo-meta";
@@ -16,6 +17,13 @@ export default async function ContactPage({ searchParams }) {
     params?.source === "calculator" &&
     typeof params.type === "string" &&
     typeof params.country === "string";
+
+  let prefillService = "";
+  if (params?.source === "quote-review") {
+    prefillService = QUOTE_REVIEW_SERVICE_OPTION;
+  } else if (params?.source === "partners" && params?.type === "agency") {
+    prefillService = "Website Development";
+  }
 
   const [services, settings, socials] = await Promise.all([
     getActiveServices(),
@@ -37,6 +45,7 @@ export default async function ContactPage({ searchParams }) {
           services={services}
           contactEmail={settings.email?.trim() || "hello@mayonity.com"}
           calculatorPrefill={calculatorSource ? { type: params.type, country: params.country } : null}
+          prefillService={prefillService}
         />
         <aside className="space-y-6">
           <div className="glass rounded-[1.5rem] p-6">

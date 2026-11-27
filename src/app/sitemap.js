@@ -24,6 +24,7 @@ function staticEntries() {
     "/blog",
     "/contact",
     "/website-cost-calculator",
+    "/partners",
     "/careers",
     "/privacy-policy",
     "/terms-and-conditions",

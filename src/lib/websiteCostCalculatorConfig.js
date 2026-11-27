@@ -104,8 +104,8 @@ export const WEBSITE_COST_CALCULATOR_CONFIG = {
       label: "Online store",
       defaultPageTier: "6_to_15",
       ranges: {
-        SGD: [8000, 35000],
-        MYR: [15000, 70000],
+        SGD: [5000, 30000],
+        MYR: [4000, 50000],
         AUD: [10000, 30000],
         USD: [6000, 30000],
       },

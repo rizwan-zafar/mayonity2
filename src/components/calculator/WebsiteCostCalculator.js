@@ -7,6 +7,7 @@ import {
   WEBSITE_COST_CALCULATOR_CONFIG as CFG,
 } from "@/lib/websiteCostCalculatorConfig";
 import { computeEstimate, isEstimateComplete } from "@/lib/websiteCostCalculator";
+import { QuoteReviewPromo } from "@/components/marketing/QuoteReviewPromo";
 import { trackEvent } from "@/lib/trackEvent";
 
 const DEFAULT_STATE = {
@@ -151,6 +152,7 @@ export function WebsiteCostCalculator() {
           <div className="mt-8 space-y-3 text-sm text-muted">
             <p>Ranges come from published guides and our own experience. This is not a quote.</p>
             <p>Our smallest projects start at USD 1,000.</p>
+            <QuoteReviewPromo />
           </div>
 
           <Link

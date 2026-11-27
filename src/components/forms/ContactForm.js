@@ -7,6 +7,7 @@ import { getReferrerPath, getSourcePath, trackEvent } from "@/lib/trackEvent";
 import {
   CALCULATOR_CONTACT_PREFILL_KEY,
 } from "@/lib/websiteCostCalculatorConfig";
+import { QUOTE_REVIEW_SERVICE_OPTION } from "@/components/marketing/QuoteReviewPromo";
 import { getCountryLabel, getSiteTypeLabel } from "@/lib/websiteCostCalculator";
 
 const initial = { ok: false, error: "", fieldErrors: {}, values: null };
@@ -52,16 +53,25 @@ function buildCalculatorPrefillMessage(calculatorPrefill) {
   return `Project type: ${typeLabel}. Country: ${countryLabel}.${rangePart}`;
 }
 
-export function ContactForm({ services, contactEmail = "hello@mayonity.com", calculatorPrefill = null }) {
+export function ContactForm({
+  services,
+  contactEmail = "hello@mayonity.com",
+  calculatorPrefill = null,
+  prefillService = "",
+}) {
   const [state, action, pending] = useActionState(submitContact, initial);
   const [draft, setDraft] = useState(() => ({
     ...emptyDraft,
+    service: prefillService?.trim() || "",
     message: buildCalculatorPrefillMessage(calculatorPrefill),
   }));
   const formRef = useRef(null);
   const formStartTracked = useRef(false);
   const draftAtSubmit = useRef(emptyDraft);
-  const serviceOptions = (services || []).map((s) => s.name);
+  const dbServiceNames = (services || []).map((s) => s.name);
+  const serviceOptions = dbServiceNames.includes(QUOTE_REVIEW_SERVICE_OPTION)
+    ? dbServiceNames
+    : [...dbServiceNames, QUOTE_REVIEW_SERVICE_OPTION];
 
   useEffect(() => {
     if (!state.values) return;

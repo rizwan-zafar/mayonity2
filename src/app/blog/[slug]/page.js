@@ -8,6 +8,7 @@ import { shareImagesMeta } from "@/lib/seo-meta";
 import { incrementBlogPostViews } from "@/lib/blog-views";
 import { AttributionTracker } from "@/components/analytics/AttributionTracker";
 import { BlogArticleAnalytics } from "@/components/analytics/BlogArticleAnalytics";
+import { COST_GUIDE_SLUGS_WITH_QUOTE_PROMO, QuoteReviewPromo } from "@/components/marketing/QuoteReviewPromo";
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -116,6 +117,9 @@ export default async function BlogDetailPage({ params }) {
             className="prose-mayonity max-w-none"
             dangerouslySetInnerHTML={{ __html: html }}
           />
+          {COST_GUIDE_SLUGS_WITH_QUOTE_PROMO.includes(slug) ? (
+            <QuoteReviewPromo className="mt-8" />
+          ) : null}
         </div>
         {related.length ? (
           <div className="mx-auto mt-16 max-w-7xl">
